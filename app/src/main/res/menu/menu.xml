@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/in_answered"
+        android:title="In Answered"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/in_rejected"
+        android:title="In rejected"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/out_answered"
+        android:title="Out Answered"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/out_unanswered"
+        android:title="Out Unanswered"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/in_missed"
+        android:title="Missed"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/all"
+        android:title="All"
+        app:showAsAction="never" />
+
+</menu>
