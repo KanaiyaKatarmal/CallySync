@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.quantasis.calllog.R
 
-class NotAttenedCallTabFragment : Fragment() {
+class NotAttendedCallTabFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.notattened_call_tab_fragment, container, false)
+        return inflater.inflate(R.layout.notattended_call_tab_fragment, container, false)
     }
 }

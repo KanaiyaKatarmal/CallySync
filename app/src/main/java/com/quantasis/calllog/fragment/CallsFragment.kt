@@ -32,13 +32,13 @@ class CallsFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Al"
+                0 -> "All"
                 1 -> "Incoming"
                 2 -> "Outgoing"
                 3 -> "Missed"
                 4 -> "Rejected"
                 5 -> "Not Picked Outgoing"
-                6 -> "Not Attened Incoming"
+                6 -> "Not Attended Incoming"
                 7 -> "Unknown Number"
                 8 -> "Blocked Number"
                 else -> "Tab ${position + 1}"

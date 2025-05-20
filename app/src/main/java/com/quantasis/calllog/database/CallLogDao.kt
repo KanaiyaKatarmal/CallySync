@@ -11,6 +11,5 @@ interface CallLogDao {
     suspend fun insert(log: CallLogEntryEntity)
 
     @Query("SELECT * FROM calllog ORDER BY date DESC")
-    suspend fun getAll(): List<CallLogEntryEntity>
-
+    fun getAll(): LiveData<List<CallLogEntryEntity>>
 }
