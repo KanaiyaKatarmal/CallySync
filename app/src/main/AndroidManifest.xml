@@ -18,7 +18,7 @@
         android:theme="@style/Theme.CallLog"
         tools:targetApi="31" >
 
-    <activity android:name="com.quantasis.calllog.ui.SplashActivity"
+    <activity android:name="com.quantasis.calllog.ui.PermissionActivity"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -29,6 +29,9 @@
             android:exported="true">
         </activity>
         <activity android:name="com.quantasis.calllog.ui.DashboardActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name="com.quantasis.calllog.ui.SplashActivity"
             android:exported="true">
         </activity>
 
