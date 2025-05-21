@@ -1,14 +1,29 @@
 package com.quantasis.calllog.database
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import java.util.Date
 
 @Dao
 interface CallLogDao {
     @Insert
     suspend fun insert(log: CallLogEntryEntity)
+
+    @Query("""
+        SELECT * FROM calllog 
+        WHERE (:search IS NULL OR name LIKE '%' || :search || '%' OR number LIKE '%' || :search || '%') 
+        AND (:startDate IS NULL OR date >= :startDate)
+        AND (:endDate IS NULL OR date <= :endDate)
+        ORDER BY date DESC
+    """)
+    fun getCallLogsPaging(
+        search: String?,
+        startDate: Date?,
+        endDate: Date?
+    ): PagingSource<Int, CallLogEntryEntity>
 
     // All calls
     @Query("SELECT * FROM calllog ORDER BY date DESC")

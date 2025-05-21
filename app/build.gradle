@@ -50,6 +50,12 @@ dependencies {
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
 
+
+    // Paging integration with Room
+    implementation libs.androidx.room.paging
+
+    // Paging 3 core
+    implementation libs.androidx.paging.runtime
     implementation libs.androidx.fragment.ktx
     kapt "androidx.room:room-compiler:$roomVersion"
 }
