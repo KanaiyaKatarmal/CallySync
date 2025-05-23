@@ -19,6 +19,7 @@ import com.quantasis.calllog.viewModel.CallLogViewModel
 import kotlinx.coroutines.launch
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import com.quantasis.calllog.repository.CallLogPageType
 import kotlinx.coroutines.flow.collectLatest
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,6 +28,18 @@ import java.util.Locale
 
 class CallLogFragment : Fragment(R.layout.fragment_call_log) {
 
+    companion object {
+        private const val ARG_CALL_TYPE = "arg_call_type"
+
+        fun newInstance(type: CallLogPageType): CallLogFragment {
+            return CallLogFragment().apply {
+                arguments = Bundle().apply {
+                    putSerializable(ARG_CALL_TYPE, type)
+                }
+            }
+        }
+    }
+
     private lateinit var adapter: CallLogAdapter
     private var startDate: Date? = null
     private var endDate: Date? = null
@@ -34,8 +47,10 @@ class CallLogFragment : Fragment(R.layout.fragment_call_log) {
     private val viewModel: CallLogViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val callType = requireArguments().getSerializable(ARG_CALL_TYPE) as CallLogPageType
                 val dao = AppDatabase.getInstance(requireContext()).callLogDao()
-                return CallLogViewModel(CallLogRepository(dao)) as T
+                val repo = CallLogRepository(dao)
+                return CallLogViewModel(repo, callType) as T
             }
         }
     }

@@ -11,6 +11,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.quantasis.calllog.repository.CallLogPageType
 import com.quantasis.calllog.repository.CallLogRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CallLogViewModel(private val repository: CallLogRepository) : ViewModel() {
+class CallLogViewModel(private val repository: CallLogRepository,private val type: CallLogPageType) : ViewModel() {
 
     private val searchQuery = MutableStateFlow<String?>(null)
     private val startDate = MutableStateFlow<Date?>(null)
@@ -34,7 +35,7 @@ class CallLogViewModel(private val repository: CallLogRepository) : ViewModel() 
         Triple(query, start, end)
     }.flatMapLatest { (query, start, end) ->
         Pager(PagingConfig(pageSize = 20)) {
-            repository.getCallLogs(query, start, end)
+            repository.getCallLogs(query, start, end,type)
         }.flow
             .map { pagingData ->
                 pagingData.map { CallLogUiModel.Item(it) }.insertDateSeparators()

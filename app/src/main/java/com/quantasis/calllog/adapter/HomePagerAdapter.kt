@@ -12,6 +12,7 @@ import com.quantasis.calllog.fragment.NotPickedCallTabFragment
 import com.quantasis.calllog.fragment.OutgoingCallTabFragment
 import com.quantasis.calllog.fragment.RejectedCallTabFragment
 import com.quantasis.calllog.fragment.UnknownNumberCallTabFragment
+import com.quantasis.calllog.repository.CallLogPageType
 
 class HomePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
@@ -19,15 +20,15 @@ class HomePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> CallLogFragment()
-            1 -> IncomingCallTabFragment()
-            2 -> OutgoingCallTabFragment()
-            3 -> MissedCallTabFragment()
-            4 -> RejectedCallTabFragment()
-            5 -> NotPickedCallTabFragment()
-            6 -> NotAttendedCallTabFragment()
-            7 -> UnknownNumberCallTabFragment()
-            8 -> BlockedNumberCallTabFragment()
+            0 -> CallLogFragment.newInstance(CallLogPageType.ALL)
+            1 -> CallLogFragment.newInstance(CallLogPageType.INCOMING)
+            2 ->  CallLogFragment.newInstance(CallLogPageType.OUTGOING)
+            3 -> CallLogFragment.newInstance(CallLogPageType.MISSED)
+            4 -> CallLogFragment.newInstance(CallLogPageType.REJECTED)
+            5 -> CallLogFragment.newInstance(CallLogPageType.UNANSWERED_OUTGOING)
+            6 -> CallLogFragment.newInstance(CallLogPageType.LATEST_UNRETURNED_MISSED)
+            7 -> CallLogFragment.newInstance(CallLogPageType.UNKNOWN)
+            8 -> CallLogFragment.newInstance(CallLogPageType.BLOCKED)
             else -> Fragment()
         }
     }
