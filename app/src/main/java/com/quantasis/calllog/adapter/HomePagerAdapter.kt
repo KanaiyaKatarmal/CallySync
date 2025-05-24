@@ -1,17 +1,8 @@
 package com.quantasis.calllog.adapter
 
-import AllCallTabFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.quantasis.calllog.fragment.BlockedNumberCallTabFragment
 import com.quantasis.calllog.fragment.CallLogFragment
-import com.quantasis.calllog.fragment.IncomingCallTabFragment
-import com.quantasis.calllog.fragment.MissedCallTabFragment
-import com.quantasis.calllog.fragment.NotAttendedCallTabFragment
-import com.quantasis.calllog.fragment.NotPickedCallTabFragment
-import com.quantasis.calllog.fragment.OutgoingCallTabFragment
-import com.quantasis.calllog.fragment.RejectedCallTabFragment
-import com.quantasis.calllog.fragment.UnknownNumberCallTabFragment
 import com.quantasis.calllog.repository.CallLogPageType
 
 class HomePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

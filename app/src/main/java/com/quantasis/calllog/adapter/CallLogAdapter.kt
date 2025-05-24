@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
 import com.quantasis.calllog.database.CallLogEntryEntity
 import com.quantasis.calllog.viewModel.CallLogUiModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
@@ -51,7 +54,39 @@ class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder
         fun bind(entry: CallLogEntryEntity) {
             itemView.findViewById<TextView>(R.id.nameTextView).text = entry.name ?: "Unknown"
             itemView.findViewById<TextView>(R.id.numberTextView).text = entry.number
-            itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${entry.duration} sec"
+            itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${formatDuration(entry.duration)}"
+
+            itemView.findViewById<TextView>(R.id.dateTextView).text = "Date: ${formatDate(entry.date)}"
+
+            itemView.findViewById<TextView>(R.id.callTypeTextView).text = "Type: ${callTypeToString(entry.callType)}"
+        }
+
+        private fun formatDate(date: Date?): String {
+            return if (date != null) {
+                val sdf = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
+                sdf.format(date)
+            } else {
+                ""
+            }
+        }
+
+        private fun formatDuration(durationSeconds: Int): String {
+            val minutes = durationSeconds / 60
+            val seconds = durationSeconds % 60
+            return "${minutes}m ${seconds}s"
+        }
+
+        private fun callTypeToString(callType: Int): String {
+            return when (callType) {
+                1 -> "Incoming"
+                2 -> "Outgoing"
+                3 -> "Missed"
+                4 -> "Voicemail"
+                5 -> "Rejected"
+                6 -> "Blocked"
+                7 -> "Answered Externally"
+                else -> "Unknown"
+            }
         }
     }
 
