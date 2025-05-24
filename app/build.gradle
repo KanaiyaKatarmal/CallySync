@@ -50,6 +50,7 @@ dependencies {
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
 
+    implementation libs.libphonenumber
 
     // Paging integration with Room
     implementation libs.androidx.room.paging

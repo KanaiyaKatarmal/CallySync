@@ -2,13 +2,17 @@ package com.quantasis.calllog.manager
 
 import android.content.Context
 import android.provider.CallLog
+import android.telephony.TelephonyManager
+import android.util.Log
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.util.PhoneNumberUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.Date
+import java.util.Locale
 
 object CallLogSyncManager {
 
@@ -31,6 +35,9 @@ object CallLogSyncManager {
         syncMutex.withLock {
             withContext(Dispatchers.IO) {
                 val lastSynced = getLastSyncedDate(context)
+
+                val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val simCountry = telephonyManager.simCountryIso.uppercase(Locale.getDefault())
 
                 val selection = if (lastSynced > 0) "${CallLog.Calls.DATE} > ?" else null
                 val selectionArgs = if (lastSynced > 0) arrayOf(lastSynced.toString()) else null
@@ -61,9 +68,13 @@ object CallLogSyncManager {
                         val duration = it.getInt(durationIndex)
                         val typeCode = it.getInt(typeIndex)
 
+                        val result = PhoneNumberUtils.extractPhoneNumberParts(number,simCountry)
+
                         val entry = CallLogEntryEntity(
                             name = name,
-                            number = number,
+                            rawNumber = number,
+                            countryCode = result.countryCode,
+                            number = result.nationalNumber,
                             date = date,
                             duration = duration,
                             callType = typeCode

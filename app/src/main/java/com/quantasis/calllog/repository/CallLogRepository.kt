@@ -14,7 +14,7 @@ class CallLogRepository(private val dao: CallLogDao) {
             CallLogPageType.OUTGOING -> dao.getOutgoingCallsPaging(search, startDate, endDate)
             CallLogPageType.MISSED -> dao.getMissedCallsPaging(search, startDate, endDate)
             CallLogPageType.REJECTED -> dao.getRejectedCallsPaging(search, startDate, endDate)
-            CallLogPageType.UNANSWERED_OUTGOING -> dao.getUnansweredOutgoingCallsPaging(search, startDate, endDate)
+            CallLogPageType.UNANSWERED_OUTGOING -> dao.getLatestUnansweredOutgoingCallsPerNumberPaging(search, startDate, endDate)
             CallLogPageType.LATEST_UNRETURNED_MISSED -> dao.getLatestUnreturnedMissedCallsPerNumberPaging(search, startDate, endDate)
             CallLogPageType.UNKNOWN -> dao.getUnknownNumberCallsPaging(search, startDate, endDate)
             CallLogPageType.BLOCKED -> dao.getBlockedCallsPaging(search, startDate, endDate)

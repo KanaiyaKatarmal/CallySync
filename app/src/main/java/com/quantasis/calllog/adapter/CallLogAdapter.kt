@@ -53,7 +53,7 @@ class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder
     class CallLogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(entry: CallLogEntryEntity) {
             itemView.findViewById<TextView>(R.id.nameTextView).text = entry.name ?: "Unknown"
-            itemView.findViewById<TextView>(R.id.numberTextView).text = entry.number
+            itemView.findViewById<TextView>(R.id.numberTextView).text = entry.rawNumber
             itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${formatDuration(entry.duration)}"
 
             itemView.findViewById<TextView>(R.id.dateTextView).text = "Date: ${formatDate(entry.date)}"
