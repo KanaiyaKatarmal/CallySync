@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import kotlin.jvm.Volatile
 
 @Database(
@@ -17,6 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         private const val DB_NAME = "Instagram.db"
+        private const val DB_PASSWORD = "myStrongPassword" // Ideally from secure source
 
         @Volatile
         private var instance: AppDatabase? = null
@@ -28,8 +31,16 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun create(context: Context): AppDatabase {
-            return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DB_NAME)
-                // .allowMainThreadQueries() // avoid this if possible
+            // Derive a support factory using your password
+            val passphrase: ByteArray = SQLiteDatabase.getBytes(DB_PASSWORD.toCharArray())
+            val factory = SupportFactory(passphrase)
+
+            return Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                DB_NAME
+            )
+                .openHelperFactory(factory)
                 .build()
         }
     }
