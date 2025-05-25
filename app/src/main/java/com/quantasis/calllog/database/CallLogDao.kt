@@ -5,14 +5,13 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.quantasis.calllog.datamodel.CallerDashboardData
 import java.util.Date
 
 @Dao
 interface CallLogDao {
     @Insert
     suspend fun insert(log: CallLogEntryEntity)
-
-
 
     @Query("""
         SELECT * FROM calllog 
@@ -43,8 +42,6 @@ interface CallLogDao {
     ): PagingSource<Int, CallLogEntryEntity>
 
 
-
-
     @Query("""
         SELECT * FROM calllog 
         WHERE (:search IS NULL OR name LIKE '%' || :search || '%' OR number LIKE '%' || :search || '%') 
@@ -58,8 +55,6 @@ interface CallLogDao {
         startDate: Date?,
         endDate: Date?
     ): PagingSource<Int, CallLogEntryEntity>
-
-
 
 
     @Query("""
@@ -77,7 +72,6 @@ interface CallLogDao {
     ): PagingSource<Int, CallLogEntryEntity>
 
 
-
     @Query("""
         SELECT * FROM calllog 
         WHERE (:search IS NULL OR name LIKE '%' || :search || '%' OR number LIKE '%' || :search || '%') 
@@ -92,20 +86,6 @@ interface CallLogDao {
         endDate: Date?
     ): PagingSource<Int, CallLogEntryEntity>
 
-/*
-    @Query("""
-        SELECT * FROM calllog 
-        WHERE (:search IS NULL OR name LIKE '%' || :search || '%' OR number LIKE '%' || :search || '%') 
-        AND (:startDate IS NULL OR date >= :startDate)
-        AND (:endDate IS NULL OR date <= :endDate)
-        AND callType = 2 AND duration = 0
-        ORDER BY date DESC
-    """)
-    fun getUnansweredOutgoingCallsPaging(
-        search: String?,
-        startDate: Date?,
-        endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>*/
 
     @Query("""
     SELECT * FROM calllog AS call
@@ -166,8 +146,6 @@ interface CallLogDao {
     ): PagingSource<Int, CallLogEntryEntity>
 
 
-
-
     @Query("""
     SELECT * FROM calllog 
     WHERE name IS NULL
@@ -181,9 +159,6 @@ interface CallLogDao {
         startDate: Date?,
         endDate: Date?
     ): PagingSource<Int, CallLogEntryEntity>
-
-
-
 
 
 
@@ -201,4 +176,25 @@ interface CallLogDao {
         endDate: Date?
     ): PagingSource<Int, CallLogEntryEntity>
 
+
+    @Query("""
+    SELECT 
+        CASE 
+            WHEN callType = 2 AND duration = 0 THEN -1         -- Not Picked Outgoing
+            ELSE callType
+        END AS callCategory,
+        COUNT(*) AS count,
+        SUM(duration) AS totalDuration
+    FROM calllog
+    WHERE 
+        REPLACE(REPLACE(REPLACE(number, '+', ''), ' ', ''), '-', '') LIKE '%' || REPLACE(REPLACE(REPLACE(:number, '+', ''), ' ', ''), '-', '') || '%'
+        AND (:startDate IS NULL OR date >= :startDate)
+        AND (:endDate IS NULL OR date <= :endDate)
+    GROUP BY callCategory
+""")
+    suspend fun getCallerStats(
+        number: String,
+        startDate: Date?,
+        endDate: Date?
+    ): List<CallerDashboardData>
 }

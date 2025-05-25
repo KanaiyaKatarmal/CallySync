@@ -9,12 +9,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
 import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
+import com.quantasis.calllog.util.CallConvertUtil
 import com.quantasis.calllog.viewModel.CallLogUiModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class CallLogAdapter (
+    private val listener: OnCallLogItemClickListener
+): PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private const val TYPE_ITEM = 0
@@ -38,7 +42,7 @@ class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADER -> DateHeaderViewHolder(inflater.inflate(R.layout.item_date_separator, parent, false))
-            else -> CallLogViewHolder(inflater.inflate(R.layout.item_call_log, parent, false))
+            else -> CallLogViewHolder(inflater.inflate(R.layout.item_call_log, parent, false),listener)
         }
     }
 
@@ -50,44 +54,21 @@ class CallLogAdapter : PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder
         }
     }
 
-    class CallLogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class CallLogViewHolder(view: View,private val listener: OnCallLogItemClickListener) : RecyclerView.ViewHolder(view) {
         fun bind(entry: CallLogEntryEntity) {
             itemView.findViewById<TextView>(R.id.nameTextView).text = entry.name ?: "Unknown"
             itemView.findViewById<TextView>(R.id.numberTextView).text = entry.rawNumber
-            itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${formatDuration(entry.duration)}"
+            itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${CallConvertUtil.formatDuration(entry.duration)}"
 
-            itemView.findViewById<TextView>(R.id.dateTextView).text = "Date: ${formatDate(entry.date)}"
+            itemView.findViewById<TextView>(R.id.dateTextView).text = "Date: ${CallConvertUtil.formatDate(entry.date)}"
 
-            itemView.findViewById<TextView>(R.id.callTypeTextView).text = "Type: ${callTypeToString(entry.callType)}"
-        }
+            itemView.findViewById<TextView>(R.id.callTypeTextView).text = "Type: ${CallConvertUtil.callTypeToString(entry.callType)}"
 
-        private fun formatDate(date: Date?): String {
-            return if (date != null) {
-                val sdf = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
-                sdf.format(date)
-            } else {
-                ""
+            itemView.setOnClickListener {
+                listener.onItemClick(entry)
             }
         }
 
-        private fun formatDuration(durationSeconds: Int): String {
-            val minutes = durationSeconds / 60
-            val seconds = durationSeconds % 60
-            return "${minutes}m ${seconds}s"
-        }
-
-        private fun callTypeToString(callType: Int): String {
-            return when (callType) {
-                1 -> "Incoming"
-                2 -> "Outgoing"
-                3 -> "Missed"
-                4 -> "Voicemail"
-                5 -> "Rejected"
-                6 -> "Blocked"
-                7 -> "Answered Externally"
-                else -> "Unknown"
-            }
-        }
     }
 
     class DateHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {

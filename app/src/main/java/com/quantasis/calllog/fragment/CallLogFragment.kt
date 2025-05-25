@@ -1,6 +1,7 @@
 package com.quantasis.calllog.fragment
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -19,7 +20,10 @@ import com.quantasis.calllog.viewModel.CallLogViewModel
 import kotlinx.coroutines.launch
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.repository.CallLogPageType
+import com.quantasis.calllog.ui.CallerDashboardActivity
 import kotlinx.coroutines.flow.collectLatest
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -68,7 +72,15 @@ class CallLogFragment : Fragment(R.layout.fragment_call_log) {
         val endDateBtn = view.findViewById<Button>(R.id.endDateButton)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
-        adapter = CallLogAdapter()
+        adapter = CallLogAdapter(object : OnCallLogItemClickListener {
+            override fun onItemClick(entry: CallLogEntryEntity) {
+                val intent = Intent(requireContext(), CallerDashboardActivity::class.java).apply {
+                    putExtra("name", entry.name)
+                    putExtra("number", entry.number)
+                }
+                startActivity(intent)
+            }
+        })
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 

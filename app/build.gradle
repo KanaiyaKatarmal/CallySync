@@ -55,6 +55,8 @@ dependencies {
     // Paging integration with Room
     implementation libs.androidx.room.paging
 
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     // Paging 3 core
     implementation libs.androidx.paging.runtime
     implementation libs.androidx.fragment.ktx

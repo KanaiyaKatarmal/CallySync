@@ -12,6 +12,6 @@ class ContactsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.contacts_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_contacts, container, false)
     }
 }
