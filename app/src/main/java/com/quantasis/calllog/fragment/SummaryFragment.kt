@@ -5,13 +5,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
+import com.quantasis.calllog.adapter.SummaryAdapter
+import com.quantasis.calllog.database.AppDatabase
+import com.quantasis.calllog.repository.CallLogRepository
+import com.quantasis.calllog.viewModel.SummaryViewModel
+import com.quantasis.calllog.viewModel.SummaryViewModelFactory
+import java.util.Date
 
 class SummaryFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_analysis, container, false)
+
+    private lateinit var viewModel: SummaryViewModel
+    private lateinit var adapter: SummaryAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_summary, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val dao = AppDatabase.getInstance(requireContext()).callLogDao()
+        val repository = CallLogRepository(dao)
+        viewModel = ViewModelProvider(this, SummaryViewModelFactory(repository))[SummaryViewModel::class.java]
+
+        adapter = SummaryAdapter()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.summaryRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+
+        // Replace with actual values
+        val startDate: Date? = null
+        val endDate: Date? = null
+
+        viewModel.loadSummary(startDate, endDate)
+
+        viewModel.summaryData.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
     }
 }

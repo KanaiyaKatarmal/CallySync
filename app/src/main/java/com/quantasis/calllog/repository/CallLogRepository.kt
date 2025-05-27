@@ -20,6 +20,9 @@ class CallLogRepository(private val dao: CallLogDao) {
             CallLogPageType.BLOCKED -> dao.getBlockedCallsPaging(search, startDate, endDate)
         }
     }
+
+    suspend fun getCallSummary(startDate: Date?, endDate: Date?) =
+        dao.getCallSummary(startDate, endDate)
 }
 
 enum class CallLogPageType {

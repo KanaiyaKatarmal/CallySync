@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.quantasis.calllog.datamodel.CallSummary
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import java.util.Date
 
@@ -197,4 +198,46 @@ interface CallLogDao {
         startDate: Date?,
         endDate: Date?
     ): List<CallerDashboardData>
+
+
+    @Query("""
+    SELECT 'All Calls' AS label, COUNT(*) AS count, SUM(duration) AS duration 
+    FROM calllog
+    WHERE (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Incoming', COUNT(*), SUM(duration) FROM calllog WHERE callType = 1 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Outgoing', COUNT(*), SUM(duration) FROM calllog WHERE callType = 2 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Missed', COUNT(*), SUM(duration) FROM calllog WHERE callType = 3 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Rejected', COUNT(*), SUM(duration) FROM calllog WHERE callType = 5 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Unanswered Outgoing', COUNT(*) AS count, SUM(duration) AS duration FROM calllog AS call
+    WHERE call.callType = 2 AND call.duration = 0 AND call.date = (
+        SELECT MAX(inner_call.date)
+        FROM calllog AS inner_call
+        WHERE inner_call.callType = 2 AND inner_call.duration = 0 AND inner_call.number = call.number)
+    AND NOT EXISTS (
+        SELECT 1 FROM calllog AS response
+        WHERE response.number = call.number AND response.date > call.date
+        AND response.duration > 0 AND response.callType IN (1, 2)
+    )
+    AND (:startDate IS NULL OR call.date >= :startDate) AND (:endDate IS NULL OR call.date <= :endDate)
+    UNION ALL
+    SELECT 'Unreturned Missed', COUNT(*) AS count, SUM(duration) AS duration FROM calllog AS missed
+    WHERE missed.callType = 3 AND NOT EXISTS (
+        SELECT 1 FROM calllog AS callback
+        WHERE callback.callType IN (1, 2) AND callback.number = missed.number AND callback.date > missed.date AND callback.duration > 0
+    )
+    AND missed.date = (
+        SELECT MAX(innerMissed.date) FROM calllog AS innerMissed WHERE innerMissed.callType = 3 AND innerMissed.number = missed.number
+    )
+    AND (:startDate IS NULL OR missed.date >= :startDate) AND (:endDate IS NULL OR missed.date <= :endDate)
+    UNION ALL
+    SELECT 'Unknown Numbers', COUNT(*), SUM(duration) FROM calllog WHERE name IS NULL AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+    UNION ALL
+    SELECT 'Blocked', COUNT(*), SUM(duration) FROM calllog WHERE callType = 6 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
+""")
+    suspend fun getCallSummary(startDate: Date?, endDate: Date?): List<CallSummary>
 }
