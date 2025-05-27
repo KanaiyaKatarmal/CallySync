@@ -26,7 +26,8 @@ class DashboardActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_calls -> loadFragment(CallsFragment())
-                R.id.nav_analysis -> loadFragment(AnalysisFragment())
+                R.id.nav_analysis -> loadFragment(AnalysisFragment.newInstance("", null, null)
+                )
                 R.id.nav_contacts -> loadFragment(ContactsFragment())
                 R.id.nav_more -> loadFragment(MoreFragment())
             }
