@@ -88,12 +88,14 @@ class AnalysisFragment : Fragment() {
         pieChart.apply {
             description.isEnabled = false
             isRotationEnabled = false
+            isDrawHoleEnabled = false  // ❌ No white hole
             setUsePercentValues(true)
             legend.isEnabled = true
         }
 
         pieChartDuration.apply {
             description.isEnabled = false
+            isDrawHoleEnabled = false  // ❌ No white hole
             isRotationEnabled = false
             setUsePercentValues(true)
             legend.isEnabled = true

@@ -7,6 +7,8 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.quantasis.calllog.datamodel.CallSummary
 import com.quantasis.calllog.datamodel.CallerDashboardData
+import com.quantasis.calllog.datamodel.TopCallerEntry
+import com.quantasis.calllog.datamodel.TopDurationEntry
 import java.util.Date
 
 @Dao
@@ -240,4 +242,48 @@ interface CallLogDao {
     SELECT 'Blocked', COUNT(*), SUM(duration) FROM calllog WHERE callType = 6 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
 """)
     suspend fun getCallSummary(startDate: Date?, endDate: Date?): List<CallSummary>
+
+
+    @Query("""
+        SELECT * FROM CallLog
+        WHERE duration = (
+            SELECT MAX(duration) FROM CallLog 
+            WHERE  (:startDate IS NULL OR date >= :startDate)
+        AND (:endDate IS NULL OR date <= :endDate)
+        )
+        LIMIT 1
+    """)
+    suspend fun getLongestCall(
+        startDate: Date? = null,
+        endDate: Date? = null
+    ): CallLogEntryEntity?
+
+    @Query("""
+        SELECT number, name, SUM(duration) as totalDuration
+        FROM CallLog
+        WHERE  (:startDate IS NULL OR date >= :startDate)
+        AND (:endDate IS NULL OR date <= :endDate)
+        GROUP BY number
+        ORDER BY totalDuration DESC
+        LIMIT 1
+    """)
+    suspend fun getTop1ByTotalDuration(
+        startDate: Date? = null,
+        endDate: Date? = null
+    ): TopDurationEntry?
+
+    @Query("""
+    SELECT number, name, COUNT(*) as totalCalls
+    FROM CallLog
+    WHERE (:startDate IS NULL OR date >= :startDate)
+        AND (:endDate IS NULL OR date <= :endDate)
+    GROUP BY number
+    ORDER BY totalCalls DESC
+    LIMIT 1
+""")
+    suspend fun getTopCallerByTotalCalls(
+        startDate: Date? = null,
+        endDate: Date? = null
+    ): TopCallerEntry?
+
 }
