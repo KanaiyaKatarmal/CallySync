@@ -4,6 +4,7 @@ import com.quantasis.calllog.database.CallLogDao
 import com.quantasis.calllog.database.CallLogEntryEntity
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.datamodel.TopCallerEntry
+import com.quantasis.calllog.datamodel.TopDurationEntry
 import java.util.Date
 
 class CallerDashboardRepository(private val dao: CallLogDao) {
@@ -27,5 +28,13 @@ class CallerDashboardRepository(private val dao: CallLogDao) {
         endDate: Date?
     ): TopCallerEntry? {
         return dao.getTopCallerByTotalCalls(startDate, endDate)
+    }
+
+
+    suspend fun getHighestCallTotalDuration(
+        startDate: Date?,
+        endDate: Date?
+    ): TopDurationEntry? {
+        return dao.getTop1ByTotalDuration(startDate, endDate)
     }
 }

@@ -12,6 +12,7 @@ import com.quantasis.calllog.datamodel.StatCardItem
 import com.quantasis.calllog.datamodel.StatType
 import com.quantasis.calllog.repository.CallLogRepository
 import com.quantasis.calllog.repository.CallerDashboardRepository
+import com.quantasis.calllog.util.CallConvertUtil
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -24,6 +25,7 @@ class DetailedAnalysisViewModel(application: Application,private val repository:
         viewModelScope.launch {
             val longestCall = repository.getLongestCall(startDate, endDate)
             val topCaller = repository.getTopCallerByTotalCalls(startDate, endDate)
+            val highestCallerDuration = repository.getHighestCallTotalDuration(startDate, endDate)
             val top10Callers = StatCardItem("Top 10 Callers", "Tap to View", StatType.TOP_10_CALLERS)
             val top10Incoming = StatCardItem("Top 10 Incoming", "Tap to View", StatType.TOP_10_INCOMING)
             val top10Outgoing = StatCardItem("Top 10 Outgoing", "Tap to View", StatType.TOP_10_OUTGOING)
@@ -33,14 +35,15 @@ class DetailedAnalysisViewModel(application: Application,private val repository:
 
             _statistics.postValue(
                 listOf(
-                    StatCardItem("Longest Call", "${longestCall?.name ?: "Unknown"}\n${longestCall?.duration ?: 0} sec", StatType.LONGEST_CALL),
+                    StatCardItem("Longest Call", "${longestCall?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(longestCall?.duration ?: 0)}", StatType.LONGEST_CALL),
                     StatCardItem("Top Caller (Total)", "${topCaller?.name ?: "Unknown"}\n${topCaller?.totalCalls ?: 0} calls", StatType.TOP_TOTAL_CALLS),
                     top10Callers,
                     top10Incoming,
                     top10Outgoing,
                     top10Duration,
                     top10IncomingDuration,
-                    top10OutgoingDuration
+                    top10OutgoingDuration,
+                    StatCardItem("Highest Total Call Duration", "${highestCallerDuration?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(highestCallerDuration?.totalDuration ?: 0)}", StatType.HIGHEST_TOTAL_CALL_DURATION),
                 )
             )
         }

@@ -33,7 +33,7 @@ class SummaryAdapter : RecyclerView.Adapter<SummaryAdapter.ViewHolder>() {
         val item = items[position]
         holder.label.text = item.label
         holder.count.text = "Calls: ${item.count}"
-        holder.duration.text = "Duration: ${CallConvertUtil.formatDuration(item.duration.toInt())}s"
+        holder.duration.text = "Duration: ${CallConvertUtil.formatDuration(item.duration.toInt())}"
     }
 
     override fun getItemCount() = items.size
