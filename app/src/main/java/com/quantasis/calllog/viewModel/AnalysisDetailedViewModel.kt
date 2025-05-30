@@ -24,24 +24,24 @@ class AnalysisDetailedViewModel(application: Application,private val repository:
             val longestCall = repository.getLongestCall(startDate, endDate)
             val topCaller = repository.getTopCallerByTotalCalls(startDate, endDate)
             val highestCallerDuration = repository.getHighestCallTotalDuration(startDate, endDate)
-            val top10Callers = StatCardItem("Top 10 Callers", "Tap to View", StatType.TOP_10_CALLERS)
-            val top10Incoming = StatCardItem("Top 10 Incoming", "Tap to View", StatType.TOP_10_INCOMING)
-            val top10Outgoing = StatCardItem("Top 10 Outgoing", "Tap to View", StatType.TOP_10_OUTGOING)
-            val top10Duration = StatCardItem("Top 10 by Duration", "Tap to View", StatType.TOP_10_DURATION)
-            val top10IncomingDuration = StatCardItem("Top 10 Incoming Dur.", "Tap to View", StatType.TOP_10_INCOMING_DURATION)
-            val top10OutgoingDuration = StatCardItem("Top 10 Outgoing Dur.", "Tap to View", StatType.TOP_10_OUTGOING_DURATION)
+            val top10Callers = StatCardItem("Top 10 Callers", "Tap to View", StatType.TOP_10_CALLERS,"")
+            val top10Incoming = StatCardItem("Top 10 Incoming", "Tap to View", StatType.TOP_10_INCOMING,"")
+            val top10Outgoing = StatCardItem("Top 10 Outgoing", "Tap to View", StatType.TOP_10_OUTGOING,"")
+            val top10Duration = StatCardItem("Top 10 by Duration", "Tap to View", StatType.TOP_10_DURATION,"")
+            val top10IncomingDuration = StatCardItem("Top 10 Incoming Dur.", "Tap to View", StatType.TOP_10_INCOMING_DURATION,"")
+            val top10OutgoingDuration = StatCardItem("Top 10 Outgoing Dur.", "Tap to View", StatType.TOP_10_OUTGOING_DURATION,"")
 
             _statistics.postValue(
                 listOf(
-                    StatCardItem("Longest Call", "${longestCall?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(longestCall?.duration ?: 0)}", StatType.LONGEST_CALL),
-                    StatCardItem("Top Caller (Total)", "${topCaller?.name ?: "Unknown"}\n${topCaller?.totalCalls ?: 0} calls", StatType.TOP_TOTAL_CALLS),
+                    StatCardItem("Longest Call", "${longestCall?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(longestCall?.duration ?: 0)}", StatType.LONGEST_CALL,longestCall?.number),
+                    StatCardItem("Top Caller (Total)", "${topCaller?.name ?: "Unknown"}\n${topCaller?.totalCalls ?: 0} calls", StatType.TOP_TOTAL_CALLS,topCaller?.number),
                     top10Callers,
                     top10Incoming,
                     top10Outgoing,
                     top10Duration,
                     top10IncomingDuration,
                     top10OutgoingDuration,
-                    StatCardItem("Highest Total Call Duration", "${highestCallerDuration?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(highestCallerDuration?.totalDuration ?: 0)}", StatType.HIGHEST_TOTAL_CALL_DURATION),
+                    StatCardItem("Highest Total Call Duration", "${highestCallerDuration?.name ?: "Unknown"}\n${CallConvertUtil.formatDuration(highestCallerDuration?.totalDuration ?: 0)}", StatType.HIGHEST_TOTAL_CALL_DURATION,highestCallerDuration?.number),
                 )
             )
         }

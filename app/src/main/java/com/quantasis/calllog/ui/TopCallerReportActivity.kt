@@ -1,5 +1,6 @@
 package com.quantasis.calllog.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -9,6 +10,7 @@ import com.quantasis.calllog.R
 import com.quantasis.calllog.adapter.TopCallerReportAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.StatType
+import com.quantasis.calllog.datamodel.TopCallListItemSummary
 import com.quantasis.calllog.repository.CallLogRepository
 import com.quantasis.calllog.viewModel.TopCallerReportViewModel
 import com.quantasis.calllog.viewModel.TopCallerReportViewModelFactory
@@ -31,7 +33,13 @@ class TopCallerReportActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)[TopCallerReportViewModel::class.java]
 
         val recyclerView = findViewById<RecyclerView>(R.id.summaryRecyclerView)
-        adapter = TopCallerReportAdapter()
+        adapter = TopCallerReportAdapter { topCallListItemSummary ->
+
+            val intent = Intent(applicationContext, CallerDashboardActivity::class.java)
+            intent.putExtra("number", topCallListItemSummary.number)
+            intent.putExtra("name", topCallListItemSummary.name)
+            startActivity(intent)
+        }
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 

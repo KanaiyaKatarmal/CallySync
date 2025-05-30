@@ -14,6 +14,7 @@ import com.quantasis.calllog.adapter.DetailedAnalysisAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.StatType
 import com.quantasis.calllog.repository.CallerDashboardRepository
+import com.quantasis.calllog.ui.CallerDashboardActivity
 import com.quantasis.calllog.ui.TopCallerReportActivity
 import com.quantasis.calllog.viewModel.AnalysisDetailedViewModel
 import com.quantasis.calllog.viewModel.AnalysisDetailedViewModelFactory
@@ -44,7 +45,7 @@ class AnalysisDetailedFragment : Fragment() {
         val factory = AnalysisDetailedViewModelFactory(requireActivity().application, repository)
         viewModel = ViewModelProvider(this, factory)[AnalysisDetailedViewModel::class.java]
 
-        adapter = DetailedAnalysisAdapter { type ->
+        adapter = DetailedAnalysisAdapter { type,number,name ->
 
             when (type) {
                 StatType.TOP_10_CALLERS, StatType.TOP_10_INCOMING, StatType.TOP_10_OUTGOING,
@@ -59,9 +60,10 @@ class AnalysisDetailedFragment : Fragment() {
 
                 StatType.LONGEST_CALL, StatType.TOP_TOTAL_CALLS, StatType.HIGHEST_TOTAL_CALL_DURATION
                 -> {
-                    /*val intent = Intent(context, CallerSummaryActivity::class.java)
-                    intent.putExtra("start_type", type)
-                    startActivity(intent)*/
+                    val intent = Intent(context, CallerDashboardActivity::class.java)
+                    intent.putExtra("number", number)
+                    intent.putExtra("name", name)
+                    startActivity(intent)
                 }
             }
 

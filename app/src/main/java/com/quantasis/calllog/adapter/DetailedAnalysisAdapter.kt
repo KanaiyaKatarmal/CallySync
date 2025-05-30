@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
 
 class DetailedAnalysisAdapter(
-    private val onClick: (StatType) -> Unit
+    private val onClick: (StatType,String?,String?) -> Unit
 ) : ListAdapter<StatCardItem, DetailedAnalysisAdapter.StatViewHolder>(DiffCallback()) {
 
     inner class StatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,7 +24,7 @@ class DetailedAnalysisAdapter(
             title.text = item.title
             value.text = item.value
             card.setOnClickListener {
-                onClick(item.statType)
+                onClick(item.statType,item.number,item.value)
             }
         }
     }

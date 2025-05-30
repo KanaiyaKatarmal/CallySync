@@ -2,7 +2,8 @@ package com.quantasis.calllog.datamodel
 data class StatCardItem(
     val title: String,
     val value: String,
-    val statType: StatType
+    val statType: StatType,
+    val number: String?,
 )
 
 enum class StatType {
