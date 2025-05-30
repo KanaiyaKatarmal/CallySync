@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.quantasis.calllog.datamodel.CallSummary
 import com.quantasis.calllog.datamodel.CallerDashboardData
+import com.quantasis.calllog.datamodel.CallerSummary
 import com.quantasis.calllog.datamodel.TopCallerEntry
 import com.quantasis.calllog.datamodel.TopDurationEntry
 import java.util.Date
@@ -286,4 +287,62 @@ interface CallLogDao {
         endDate: Date? = null
     ): TopCallerEntry?
 
+
+    @Query("""
+        SELECT name, number, COUNT(*) as total 
+        FROM calllog 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10Callers(): List<CallerSummary>
+
+    @Query("""
+        SELECT name, number, COUNT(*) as total 
+        FROM calllog 
+        WHERE callType = 1 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10Incoming(): List<CallerSummary>
+
+    @Query("""
+        SELECT name, number, COUNT(*) as total 
+        FROM calllog 
+        WHERE callType = 2 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10Outgoing(): List<CallerSummary>
+
+    @Query("""
+        SELECT name, number, SUM(duration) as total 
+        FROM calllog 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10Duration(): List<CallerSummary>
+
+    @Query("""
+        SELECT name, number, SUM(duration) as total 
+        FROM calllog 
+        WHERE callType = 1 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10IncomingDuration(): List<CallerSummary>
+
+    @Query("""
+        SELECT name, number, SUM(duration) as total 
+        FROM calllog 
+        WHERE callType = 2 
+        GROUP BY number 
+        ORDER BY total DESC 
+        LIMIT 10
+    """)
+    suspend fun getTop10OutgoingDuration(): List<CallerSummary>
 }

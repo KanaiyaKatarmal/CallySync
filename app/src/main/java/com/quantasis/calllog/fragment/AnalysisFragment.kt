@@ -1,12 +1,10 @@
 package com.quantasis.calllog.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -18,7 +16,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
-import com.quantasis.calllog.adapter.AnalysisPagerAdapter
+import pageradapter.AnalysisPagerAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.repository.CallerDashboardRepository

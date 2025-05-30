@@ -16,22 +16,22 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.quantasis.calllog.R
-import com.quantasis.calllog.adapter.CallerDashboardAdapter
+import com.quantasis.calllog.adapter.CallerDashboardOverviewAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.repository.CallerDashboardRepository
 import com.quantasis.calllog.util.CallConvertUtil
-import com.quantasis.calllog.viewModel.CallerDashboardViewModel
+import com.quantasis.calllog.viewModel.CallerDashboardOverviewViewModel
 import java.util.Date
 
 
 class CallerDashboardOverviewFragment : Fragment() {
 
-    private lateinit var viewModel: CallerDashboardViewModel
+    private lateinit var viewModel: CallerDashboardOverviewViewModel
     private lateinit var pieChartCalls: PieChart
     private lateinit var pieChartDuration: PieChart
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CallerDashboardAdapter
+    private lateinit var adapter: CallerDashboardOverviewAdapter
 
 
     override fun onCreateView(
@@ -60,7 +60,7 @@ class CallerDashboardOverviewFragment : Fragment() {
         pieChartCalls = view.findViewById(R.id.pieChartCalls)
         pieChartDuration = view.findViewById(R.id.pieChartDuration)
         recyclerView = view.findViewById(R.id.statsRecyclerView)
-        adapter = CallerDashboardAdapter()
+        adapter = CallerDashboardOverviewAdapter()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -93,9 +93,9 @@ class CallerDashboardOverviewFragment : Fragment() {
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return CallerDashboardViewModel(repository) as T
+                return CallerDashboardOverviewViewModel(repository) as T
             }
-        })[CallerDashboardViewModel::class.java]
+        })[CallerDashboardOverviewViewModel::class.java]
 
         val mobileNumber = arguments?.getString(CallerDashboardOverviewFragment.ARG_MOB_NO) ?: return
         val startDate = arguments?.getSerializable("start_date") as? Date

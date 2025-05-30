@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
-import com.quantasis.calllog.adapter.CallLogAdapter
+import com.quantasis.calllog.adapter.CallLogListAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.repository.CallLogRepository
 import com.quantasis.calllog.viewModel.CallLogViewModel
@@ -30,13 +30,13 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class CallLogFragment : Fragment(R.layout.fragment_call_log) {
+class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
 
     companion object {
         private const val ARG_CALL_TYPE = "arg_call_type"
 
-        fun newInstance(type: CallLogPageType): CallLogFragment {
-            return CallLogFragment().apply {
+        fun newInstance(type: CallLogPageType): CallLogListFragment {
+            return CallLogListFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_CALL_TYPE, type)
                 }
@@ -44,7 +44,7 @@ class CallLogFragment : Fragment(R.layout.fragment_call_log) {
         }
     }
 
-    private lateinit var adapter: CallLogAdapter
+    private lateinit var adapter: CallLogListAdapter
     private var startDate: Date? = null
     private var endDate: Date? = null
 
@@ -72,7 +72,7 @@ class CallLogFragment : Fragment(R.layout.fragment_call_log) {
         val endDateBtn = view.findViewById<Button>(R.id.endDateButton)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
-        adapter = CallLogAdapter(object : OnCallLogItemClickListener {
+        adapter = CallLogListAdapter(object : OnCallLogItemClickListener {
             override fun onItemClick(entry: CallLogEntryEntity) {
                 val intent = Intent(requireContext(), CallerDashboardActivity::class.java).apply {
                     putExtra("name", entry.name)

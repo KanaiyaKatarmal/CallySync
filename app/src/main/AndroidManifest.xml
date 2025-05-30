@@ -39,6 +39,11 @@
         <activity android:name=".ui.CallerDashboardActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".ui.TopCallerReportActivity"
+            android:exported="true">
+        </activity>
+
+
 
         <receiver android:name=".receiver.CallReceiver"
             android:enabled="true"

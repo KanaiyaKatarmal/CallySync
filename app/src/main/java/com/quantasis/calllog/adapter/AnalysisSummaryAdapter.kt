@@ -9,7 +9,7 @@ import com.quantasis.calllog.R
 import com.quantasis.calllog.datamodel.CallSummary
 import com.quantasis.calllog.util.CallConvertUtil
 
-class SummaryAdapter : RecyclerView.Adapter<SummaryAdapter.ViewHolder>() {
+class AnalysisSummaryAdapter : RecyclerView.Adapter<AnalysisSummaryAdapter.ViewHolder>() {
 
     private var items: List<CallSummary> = listOf()
 

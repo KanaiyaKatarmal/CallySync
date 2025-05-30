@@ -10,7 +10,7 @@ import com.quantasis.calllog.repository.CallLogRepository
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class SummaryViewModel(private val repository: CallLogRepository) : ViewModel() {
+class AnalysisSummaryViewModel(private val repository: CallLogRepository) : ViewModel() {
     private val _summaryData = MutableLiveData<List<CallSummary>>()
     val summaryData: LiveData<List<CallSummary>> = _summaryData
 
@@ -23,8 +23,8 @@ class SummaryViewModel(private val repository: CallLogRepository) : ViewModel() 
 
 class SummaryViewModelFactory(private val repository: CallLogRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SummaryViewModel::class.java)) {
-            return SummaryViewModel(repository) as T
+        if (modelClass.isAssignableFrom(AnalysisSummaryViewModel::class.java)) {
+            return AnalysisSummaryViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

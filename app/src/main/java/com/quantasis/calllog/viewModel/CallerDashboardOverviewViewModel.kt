@@ -5,15 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quantasis.calllog.datamodel.CallerDashboardData
-import com.quantasis.calllog.repository.CallLogRepository
 import com.quantasis.calllog.repository.CallerDashboardRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class CallerDashboardViewModel(private val repository: CallerDashboardRepository) : ViewModel() {
+class CallerDashboardOverviewViewModel(private val repository: CallerDashboardRepository) : ViewModel() {
 
     private val _dashboardData = MutableLiveData<List<CallerDashboardData>>()
     val dashboardData: LiveData<List<CallerDashboardData>> = _dashboardData

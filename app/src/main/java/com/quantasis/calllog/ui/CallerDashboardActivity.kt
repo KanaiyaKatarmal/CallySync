@@ -5,7 +5,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
-import com.quantasis.calllog.adapter.CallerDashboardPagerAdapter
+import pageradapter.CallerDashboardPagerAdapter
 import com.quantasis.calllog.database.AppDatabase
 
 class CallerDashboardActivity : AppCompatActivity() {

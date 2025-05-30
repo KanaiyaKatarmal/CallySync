@@ -23,6 +23,13 @@ class CallLogRepository(private val dao: CallLogDao) {
 
     suspend fun getCallSummary(startDate: Date?, endDate: Date?) =
         dao.getCallSummary(startDate, endDate)
+
+    suspend fun getTop10Callers() = dao.getTop10Callers()
+    suspend fun getTop10Incoming() = dao.getTop10Incoming()
+    suspend fun getTop10Outgoing() = dao.getTop10Outgoing()
+    suspend fun getTop10Duration() = dao.getTop10Duration()
+    suspend fun getTop10IncomingDuration() = dao.getTop10IncomingDuration()
+    suspend fun getTop10OutgoingDuration() = dao.getTop10OutgoingDuration()
 }
 
 enum class CallLogPageType {

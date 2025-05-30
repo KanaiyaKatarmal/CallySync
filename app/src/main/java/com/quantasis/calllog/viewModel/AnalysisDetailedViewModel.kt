@@ -7,16 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.StatCardItem
 import com.quantasis.calllog.datamodel.StatType
-import com.quantasis.calllog.repository.CallLogRepository
 import com.quantasis.calllog.repository.CallerDashboardRepository
 import com.quantasis.calllog.util.CallConvertUtil
 import kotlinx.coroutines.launch
 import java.util.Date
 
-class DetailedAnalysisViewModel(application: Application,private val repository: CallerDashboardRepository) : AndroidViewModel(application) {
+class AnalysisDetailedViewModel(application: Application,private val repository: CallerDashboardRepository) : AndroidViewModel(application) {
 
     private val _statistics = MutableLiveData<List<StatCardItem>>()
     val statistics: LiveData<List<StatCardItem>> = _statistics
@@ -50,15 +48,15 @@ class DetailedAnalysisViewModel(application: Application,private val repository:
     }
 }
 
-class DetailedAnalysisViewModelFactory(
+class AnalysisDetailedViewModelFactory(
     private val application: Application,
     private val repository: CallerDashboardRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DetailedAnalysisViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(AnalysisDetailedViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return DetailedAnalysisViewModel(application, repository) as T
+            return AnalysisDetailedViewModel(application, repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

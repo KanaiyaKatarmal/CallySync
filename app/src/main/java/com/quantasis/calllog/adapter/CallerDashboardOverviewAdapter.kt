@@ -11,7 +11,7 @@ import com.quantasis.calllog.R
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.util.CallConvertUtil
 
-class CallerDashboardAdapter : ListAdapter<CallerDashboardData, CallerDashboardAdapter.ViewHolder>(
+class CallerDashboardOverviewAdapter : ListAdapter<CallerDashboardData, CallerDashboardOverviewAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<CallerDashboardData>() {
         override fun areItemsTheSame(oldItem: CallerDashboardData, newItem: CallerDashboardData) =
             oldItem.callCategory == newItem.callCategory

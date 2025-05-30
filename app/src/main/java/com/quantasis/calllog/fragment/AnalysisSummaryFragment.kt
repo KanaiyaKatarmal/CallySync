@@ -9,17 +9,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
-import com.quantasis.calllog.adapter.SummaryAdapter
+import com.quantasis.calllog.adapter.AnalysisSummaryAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.repository.CallLogRepository
-import com.quantasis.calllog.viewModel.SummaryViewModel
+import com.quantasis.calllog.viewModel.AnalysisSummaryViewModel
 import com.quantasis.calllog.viewModel.SummaryViewModelFactory
 import java.util.Date
 
-class SummaryFragment : Fragment() {
+class AnalysisSummaryFragment : Fragment() {
 
-    private lateinit var viewModel: SummaryViewModel
-    private lateinit var adapter: SummaryAdapter
+    private lateinit var viewModel: AnalysisSummaryViewModel
+    private lateinit var adapter: AnalysisSummaryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_summary, container, false)
@@ -28,9 +28,9 @@ class SummaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val dao = AppDatabase.getInstance(requireContext()).callLogDao()
         val repository = CallLogRepository(dao)
-        viewModel = ViewModelProvider(this, SummaryViewModelFactory(repository))[SummaryViewModel::class.java]
+        viewModel = ViewModelProvider(this, SummaryViewModelFactory(repository))[AnalysisSummaryViewModel::class.java]
 
-        adapter = SummaryAdapter()
+        adapter = AnalysisSummaryAdapter()
         val recyclerView = view.findViewById<RecyclerView>(R.id.summaryRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter

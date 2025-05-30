@@ -1,5 +1,6 @@
 package com.quantasis.calllog.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
 import com.quantasis.calllog.adapter.DetailedAnalysisAdapter
 import com.quantasis.calllog.database.AppDatabase
+import com.quantasis.calllog.datamodel.StatType
 import com.quantasis.calllog.repository.CallerDashboardRepository
-import com.quantasis.calllog.viewModel.DetailedAnalysisViewModel
-import com.quantasis.calllog.viewModel.DetailedAnalysisViewModelFactory
+import com.quantasis.calllog.ui.TopCallerReportActivity
+import com.quantasis.calllog.viewModel.AnalysisDetailedViewModel
+import com.quantasis.calllog.viewModel.AnalysisDetailedViewModelFactory
 
-class DetailedAnalysisFragment : Fragment() {
+class AnalysisDetailedFragment : Fragment() {
 
-    private lateinit var viewModel: DetailedAnalysisViewModel
+    private lateinit var viewModel: AnalysisDetailedViewModel
     private lateinit var adapter: DetailedAnalysisAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -38,11 +41,31 @@ class DetailedAnalysisFragment : Fragment() {
         val dao = AppDatabase.getInstance(requireContext().applicationContext).callLogDao()
         val repository = CallerDashboardRepository(dao)
 
-        val factory = DetailedAnalysisViewModelFactory(requireActivity().application, repository)
-        viewModel = ViewModelProvider(this, factory)[DetailedAnalysisViewModel::class.java]
+        val factory = AnalysisDetailedViewModelFactory(requireActivity().application, repository)
+        viewModel = ViewModelProvider(this, factory)[AnalysisDetailedViewModel::class.java]
 
-        adapter = DetailedAnalysisAdapter { statType ->
-            // Handle stat card click (e.g., navigate to detail screen)
+        adapter = DetailedAnalysisAdapter { type ->
+
+            when (type) {
+                StatType.TOP_10_CALLERS, StatType.TOP_10_INCOMING, StatType.TOP_10_OUTGOING,
+                StatType.TOP_10_DURATION, StatType.TOP_10_INCOMING_DURATION, StatType.TOP_10_OUTGOING_DURATION
+                -> {
+                    // Handle stat card click (e.g., navigate to detail screen)
+                    val intent = Intent(context, TopCallerReportActivity::class.java)
+                    intent.putExtra("start_type", type)
+                    startActivity(intent)
+                }
+
+
+                StatType.LONGEST_CALL, StatType.TOP_TOTAL_CALLS, StatType.HIGHEST_TOTAL_CALL_DURATION
+                -> {
+                    /*val intent = Intent(context, CallerSummaryActivity::class.java)
+                    intent.putExtra("start_type", type)
+                    startActivity(intent)*/
+                }
+            }
+
+
         }
 
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)

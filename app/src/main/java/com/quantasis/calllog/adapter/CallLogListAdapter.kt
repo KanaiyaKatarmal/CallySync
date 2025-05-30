@@ -12,11 +12,8 @@ import com.quantasis.calllog.database.CallLogEntryEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.util.CallConvertUtil
 import com.quantasis.calllog.viewModel.CallLogUiModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class CallLogAdapter (
+class CallLogListAdapter (
     private val listener: OnCallLogItemClickListener
 ): PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
