@@ -28,8 +28,8 @@ class AnalysisDetailedViewModel(application: Application,private val repository:
             val top10Incoming = StatCardItem("Top 10 Incoming", "Tap to View", StatType.TOP_10_INCOMING,"")
             val top10Outgoing = StatCardItem("Top 10 Outgoing", "Tap to View", StatType.TOP_10_OUTGOING,"")
             val top10Duration = StatCardItem("Top 10 by Duration", "Tap to View", StatType.TOP_10_DURATION,"")
-            val top10IncomingDuration = StatCardItem("Top 10 Incoming Dur.", "Tap to View", StatType.TOP_10_INCOMING_DURATION,"")
-            val top10OutgoingDuration = StatCardItem("Top 10 Outgoing Dur.", "Tap to View", StatType.TOP_10_OUTGOING_DURATION,"")
+            val top10IncomingDuration = StatCardItem("Top 10 Incoming Duration", "Tap to View", StatType.TOP_10_INCOMING_DURATION,"")
+            val top10OutgoingDuration = StatCardItem("Top 10 Outgoing Duration", "Tap to View", StatType.TOP_10_OUTGOING_DURATION,"")
 
             _statistics.postValue(
                 listOf(

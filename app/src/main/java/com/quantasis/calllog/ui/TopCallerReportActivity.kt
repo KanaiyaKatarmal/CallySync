@@ -33,7 +33,7 @@ class TopCallerReportActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)[TopCallerReportViewModel::class.java]
 
         val recyclerView = findViewById<RecyclerView>(R.id.summaryRecyclerView)
-        adapter = TopCallerReportAdapter { topCallListItemSummary ->
+        adapter = TopCallerReportAdapter (type){ topCallListItemSummary ->
 
             val intent = Intent(applicationContext, CallerDashboardActivity::class.java)
             intent.putExtra("number", topCallListItemSummary.number)

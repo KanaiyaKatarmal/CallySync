@@ -1,5 +1,6 @@
 package com.quantasis.calllog.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
 import com.quantasis.calllog.datamodel.StatType
 import com.quantasis.calllog.datamodel.TopCallListItemSummary
+import com.quantasis.calllog.ui.CallerDashboardActivity
+import com.quantasis.calllog.ui.TopCallerReportActivity
+import com.quantasis.calllog.util.CallConvertUtil
 
-class TopCallerReportAdapter(
+class TopCallerReportAdapter( private val type :StatType ,
     private val onClick: (TopCallListItemSummary) -> Unit
 ) : RecyclerView.Adapter<TopCallerReportAdapter.ViewHolder>() {
 
@@ -38,7 +42,24 @@ class TopCallerReportAdapter(
         val item = items[position]
         holder.tvName.text = item.name ?: "Unknown"
         holder.tvNumber.text = item.number
-        holder.tvDetail.text = "Total: ${item.total}"
+
+        when (type) {
+            StatType.TOP_10_CALLERS, StatType.TOP_10_INCOMING, StatType.TOP_10_OUTGOING
+            -> {
+
+                holder.tvDetail.text = "Call: ${item.total}"
+            }
+
+
+            StatType.TOP_10_DURATION, StatType.TOP_10_INCOMING_DURATION, StatType.TOP_10_OUTGOING_DURATION
+            -> {
+
+                holder.tvDetail.text = "Duration: ${CallConvertUtil.formatDuration(item.total)}"
+            }
+
+            else -> {}
+        }
+
 
         holder.itemView.setOnClickListener {
             onClick(item)
