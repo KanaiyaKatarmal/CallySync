@@ -20,7 +20,7 @@ import com.quantasis.calllog.viewModel.CallLogViewModel
 import kotlinx.coroutines.launch
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.repository.CallLogPageType
 import com.quantasis.calllog.ui.CallerDashboardActivity
@@ -73,7 +73,7 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         adapter = CallLogListAdapter(object : OnCallLogItemClickListener {
-            override fun onItemClick(entry: CallLogEntryEntity) {
+            override fun onItemClick(entry: CallLogEntity) {
                 val intent = Intent(requireContext(), CallerDashboardActivity::class.java).apply {
                     putExtra("name", entry.name)
                     putExtra("number", entry.number)

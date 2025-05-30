@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.quantasis.calllog.datamodel.CallerSummary
+import com.quantasis.calllog.datamodel.TopCallListItemSummary
 import com.quantasis.calllog.datamodel.StatType
 import com.quantasis.calllog.repository.CallLogRepository
 import kotlinx.coroutines.launch
@@ -15,8 +15,8 @@ class TopCallerReportViewModel(
     private val type: StatType
 ) : ViewModel() {
 
-    private val _data = MutableLiveData<List<CallerSummary>>()
-    val data: LiveData<List<CallerSummary>> = _data
+    private val _data = MutableLiveData<List<TopCallListItemSummary>>()
+    val data: LiveData<List<TopCallListItemSummary>> = _data
 
     init {
         viewModelScope.launch {

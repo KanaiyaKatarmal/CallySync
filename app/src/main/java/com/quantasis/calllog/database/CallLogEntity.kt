@@ -5,7 +5,7 @@ import java.util.Date
 
 
 @Entity(tableName = "calllog")
-data class CallLogEntryEntity(
+data class CallLogEntity(
     val name: String?,
     val rawNumber: String,
     val countryCode: String?,

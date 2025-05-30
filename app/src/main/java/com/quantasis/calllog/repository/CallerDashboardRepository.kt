@@ -1,7 +1,7 @@
 package com.quantasis.calllog.repository
 
 import com.quantasis.calllog.database.CallLogDao
-import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.datamodel.TopCallerEntry
 import com.quantasis.calllog.datamodel.TopDurationEntry
@@ -20,7 +20,7 @@ class CallerDashboardRepository(private val dao: CallLogDao) {
     suspend fun getLongestCall(
         startDate: Date?,
         endDate: Date?
-    ): CallLogEntryEntity? {
+    ): CallLogEntity? {
         return dao.getLongestCall(startDate, endDate)
     }
     suspend fun getTopCallerByTotalCalls(

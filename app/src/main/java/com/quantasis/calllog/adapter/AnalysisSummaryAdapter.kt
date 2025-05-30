@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
-import com.quantasis.calllog.datamodel.CallSummary
+import com.quantasis.calllog.datamodel.CallSummaryByCategory
 import com.quantasis.calllog.util.CallConvertUtil
 
 class AnalysisSummaryAdapter : RecyclerView.Adapter<AnalysisSummaryAdapter.ViewHolder>() {
 
-    private var items: List<CallSummary> = listOf()
+    private var items: List<CallSummaryByCategory> = listOf()
 
-    fun submitList(data: List<CallSummary>) {
+    fun submitList(data: List<CallSummaryByCategory>) {
         items = data
         notifyDataSetChanged()
     }

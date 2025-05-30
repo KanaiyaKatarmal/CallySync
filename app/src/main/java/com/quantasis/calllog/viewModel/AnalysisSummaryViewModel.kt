@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.quantasis.calllog.datamodel.CallSummary
+import com.quantasis.calllog.datamodel.CallSummaryByCategory
 import com.quantasis.calllog.repository.CallLogRepository
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class AnalysisSummaryViewModel(private val repository: CallLogRepository) : ViewModel() {
-    private val _summaryData = MutableLiveData<List<CallSummary>>()
-    val summaryData: LiveData<List<CallSummary>> = _summaryData
+    private val _summaryData = MutableLiveData<List<CallSummaryByCategory>>()
+    val summaryData: LiveData<List<CallSummaryByCategory>> = _summaryData
 
     fun loadSummary(startDate: Date?, endDate: Date?) {
         viewModelScope.launch {

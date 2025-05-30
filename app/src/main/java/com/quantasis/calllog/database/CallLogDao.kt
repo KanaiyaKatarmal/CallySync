@@ -1,13 +1,12 @@
 package com.quantasis.calllog.database
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.quantasis.calllog.datamodel.CallSummary
+import com.quantasis.calllog.datamodel.CallSummaryByCategory
 import com.quantasis.calllog.datamodel.CallerDashboardData
-import com.quantasis.calllog.datamodel.CallerSummary
+import com.quantasis.calllog.datamodel.TopCallListItemSummary
 import com.quantasis.calllog.datamodel.TopCallerEntry
 import com.quantasis.calllog.datamodel.TopDurationEntry
 import java.util.Date
@@ -15,7 +14,7 @@ import java.util.Date
 @Dao
 interface CallLogDao {
     @Insert
-    suspend fun insert(log: CallLogEntryEntity)
+    suspend fun insert(log: CallLogEntity)
 
     @Query("""
         SELECT * FROM calllog 
@@ -28,7 +27,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -43,7 +42,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -58,7 +57,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -73,7 +72,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -88,7 +87,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -119,7 +118,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
     // Not Attended Call after Miss Call
     @Query("""
@@ -147,7 +146,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -162,7 +161,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
 
@@ -178,7 +177,7 @@ interface CallLogDao {
         search: String?,
         startDate: Date?,
         endDate: Date?
-    ): PagingSource<Int, CallLogEntryEntity>
+    ): PagingSource<Int, CallLogEntity>
 
 
     @Query("""
@@ -242,7 +241,7 @@ interface CallLogDao {
     UNION ALL
     SELECT 'Blocked', COUNT(*), SUM(duration) FROM calllog WHERE callType = 6 AND (:startDate IS NULL OR date >= :startDate) AND (:endDate IS NULL OR date <= :endDate)
 """)
-    suspend fun getCallSummary(startDate: Date?, endDate: Date?): List<CallSummary>
+    suspend fun getCallSummary(startDate: Date?, endDate: Date?): List<CallSummaryByCategory>
 
 
     @Query("""
@@ -257,7 +256,7 @@ interface CallLogDao {
     suspend fun getLongestCall(
         startDate: Date? = null,
         endDate: Date? = null
-    ): CallLogEntryEntity?
+    ): CallLogEntity?
 
     @Query("""
         SELECT number, name, SUM(duration) as totalDuration
@@ -295,7 +294,7 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10Callers(): List<CallerSummary>
+    suspend fun getTop10Callers(): List<TopCallListItemSummary>
 
     @Query("""
         SELECT name, number, COUNT(*) as total 
@@ -305,7 +304,7 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10Incoming(): List<CallerSummary>
+    suspend fun getTop10Incoming(): List<TopCallListItemSummary>
 
     @Query("""
         SELECT name, number, COUNT(*) as total 
@@ -315,7 +314,7 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10Outgoing(): List<CallerSummary>
+    suspend fun getTop10Outgoing(): List<TopCallListItemSummary>
 
     @Query("""
         SELECT name, number, SUM(duration) as total 
@@ -324,7 +323,7 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10Duration(): List<CallerSummary>
+    suspend fun getTop10Duration(): List<TopCallListItemSummary>
 
     @Query("""
         SELECT name, number, SUM(duration) as total 
@@ -334,7 +333,7 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10IncomingDuration(): List<CallerSummary>
+    suspend fun getTop10IncomingDuration(): List<TopCallListItemSummary>
 
     @Query("""
         SELECT name, number, SUM(duration) as total 
@@ -344,5 +343,5 @@ interface CallLogDao {
         ORDER BY total DESC 
         LIMIT 10
     """)
-    suspend fun getTop10OutgoingDuration(): List<CallerSummary>
+    suspend fun getTop10OutgoingDuration(): List<TopCallListItemSummary>
 }

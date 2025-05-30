@@ -2,12 +2,12 @@ package com.quantasis.calllog.repository
 
 import androidx.paging.PagingSource
 import com.quantasis.calllog.database.CallLogDao
-import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.database.CallLogEntity
 import java.util.Date
 
 class CallLogRepository(private val dao: CallLogDao) {
 
-    fun getCallLogs(search: String?, startDate: Date?, endDate: Date?,type: CallLogPageType): PagingSource<Int, CallLogEntryEntity>  {
+    fun getCallLogs(search: String?, startDate: Date?, endDate: Date?,type: CallLogPageType): PagingSource<Int, CallLogEntity>  {
         return when (type) {
             CallLogPageType.ALL -> dao.getCallLogsPaging(search, startDate, endDate)
             CallLogPageType.INCOMING -> dao.getIncomingCallsPaging(search, startDate, endDate)

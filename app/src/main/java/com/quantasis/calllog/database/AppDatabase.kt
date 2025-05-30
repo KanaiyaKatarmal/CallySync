@@ -9,7 +9,7 @@ import net.sqlcipher.database.SupportFactory
 import kotlin.jvm.Volatile
 
 @Database(
-    entities = [CallLogEntryEntity::class],
+    entities = [CallLogEntity::class],
     exportSchema = false,
     version = 1
 )

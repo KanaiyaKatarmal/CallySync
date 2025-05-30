@@ -8,7 +8,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
-import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.util.CallConvertUtil
 import com.quantasis.calllog.viewModel.CallLogUiModel
@@ -52,7 +52,7 @@ class CallLogListAdapter (
     }
 
     class CallLogViewHolder(view: View,private val listener: OnCallLogItemClickListener) : RecyclerView.ViewHolder(view) {
-        fun bind(entry: CallLogEntryEntity) {
+        fun bind(entry: CallLogEntity) {
             itemView.findViewById<TextView>(R.id.nameTextView).text = entry.name ?: "Unknown"
             itemView.findViewById<TextView>(R.id.numberTextView).text = entry.rawNumber
             itemView.findViewById<TextView>(R.id.durationTextView).text = "Duration: ${CallConvertUtil.formatDuration(entry.duration)}"

@@ -3,9 +3,8 @@ package com.quantasis.calllog.manager
 import android.content.Context
 import android.provider.CallLog
 import android.telephony.TelephonyManager
-import android.util.Log
 import com.quantasis.calllog.database.AppDatabase
-import com.quantasis.calllog.database.CallLogEntryEntity
+import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.util.PhoneNumberUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -70,7 +69,7 @@ object CallLogSyncManager {
 
                         val result = PhoneNumberUtils.extractPhoneNumberParts(number,simCountry)
 
-                        val entry = CallLogEntryEntity(
+                        val entry = CallLogEntity(
                             name = name,
                             rawNumber = number,
                             countryCode = result.countryCode,

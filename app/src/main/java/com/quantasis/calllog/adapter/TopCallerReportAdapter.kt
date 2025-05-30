@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.quantasis.calllog.R
-import com.quantasis.calllog.datamodel.CallerSummary
+import com.quantasis.calllog.datamodel.TopCallListItemSummary
 
 class TopCallerReportAdapter : RecyclerView.Adapter<TopCallerReportAdapter.ViewHolder>() {
 
-    private val items = mutableListOf<CallerSummary>()
+    private val items = mutableListOf<TopCallListItemSummary>()
 
-    fun submitList(data: List<CallerSummary>) {
+    fun submitList(data: List<TopCallListItemSummary>) {
         items.clear()
         items.addAll(data)
         notifyDataSetChanged()
