@@ -8,6 +8,7 @@ import com.quantasis.calllog.R
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.manager.CallLogSyncManager
 import com.quantasis.calllog.repository.ContactRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,25 +25,39 @@ class SplashActivity : AppCompatActivity() {
         db = AppDatabase.getInstance(applicationContext)
 
         // Launch coroutine to sync call logs, then open main screen
-        lifecycleScope.launch {
-
+       /* // 🔁 Start background sync without blocking
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
-                withContext(Dispatchers.IO) {
-                    ContactRepository(applicationContext, db.contactDao()).syncContactsWithDevice()
-                }
+                ContactRepository(applicationContext, db.contactDao()).syncContactsWithDevice()
             } catch (e: Exception) {
-                e.printStackTrace()  // Log any errors during sync
+                e.printStackTrace()
             }
 
             try {
                 CallLogSyncManager.syncCallLogsToRoom(applicationContext, db)
             } catch (e: Exception) {
-                e.printStackTrace()  // Log any errors during sync
+                e.printStackTrace()
             }
+        }*/
 
+        // 🔁 Run sync in global IO coroutine
+        CoroutineScope(Dispatchers.IO).launch {
+            /*try {
+                ContactRepository(applicationContext, db).syncContactsWithDevice()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }*/
 
+            try {
+                CallLogSyncManager.syncCallLogsToRoom(applicationContext, db)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            // 🚀 Immediately launch MainActivity
             openMainActivity()
         }
+
+
 
         /*lifecycleScope.launch(Dispatchers.IO) {
             ContactRepository(applicationContext, db.contactDao()).syncContactsWithDevice()
