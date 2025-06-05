@@ -29,19 +29,20 @@ interface ContactDao {
 
     @Query(
         """
-        SELECT 
-            c.id AS contactId,
-            c.name AS contactName,
-            c.photoUri AS photoUri,
-            n.phone AS phone,
-            COUNT(cl.id) AS callCount
-        FROM contacts c
-        INNER JOIN contact_numbers n ON c.id = n.contactId
-        LEFT JOIN calllog cl ON cl.number = n.phone
-        GROUP BY n.phone
-        ORDER BY callCount DESC
-        """
+    SELECT 
+        c.id AS contactId,
+        c.name AS contactName,
+        c.photoUri AS photoUri,
+        n.phone AS phone,
+        COUNT(cl.id) AS callCount
+    FROM contacts c
+    INNER JOIN contact_numbers n ON c.id = n.contactId
+    LEFT JOIN calllog cl ON cl.number = n.phone
+    WHERE c.name LIKE '%' || :query || '%' OR n.phone LIKE '%' || :query || '%'
+    GROUP BY n.phone
+    ORDER BY callCount DESC
+    """
     )
-    fun getContactCallInfoList(): LiveData<List<ContactCallInfo>>
+    fun searchContactCallInfo(query: String): LiveData<List<ContactCallInfo>>
 
 }
