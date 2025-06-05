@@ -9,13 +9,15 @@ import net.sqlcipher.database.SupportFactory
 import kotlin.jvm.Volatile
 
 @Database(
-    entities = [CallLogEntity::class],
+    entities = [CallLogEntity::class,ContactEntity::class, ContactNumberEntity::class],
     exportSchema = false,
     version = 1
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun callLogDao(): CallLogDao
+
+    abstract fun contactDao(): ContactDao
 
     companion object {
         private const val DB_NAME = "Instagram.db"

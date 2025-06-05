@@ -1,4 +1,5 @@
 package com.quantasis.calllog.ui
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import com.quantasis.calllog.R
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.manager.CallLogSyncManager
+import com.quantasis.calllog.repository.ContactRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SplashActivity : AppCompatActivity() {
 
@@ -21,14 +25,28 @@ class SplashActivity : AppCompatActivity() {
 
         // Launch coroutine to sync call logs, then open main screen
         lifecycleScope.launch {
+
+            try {
+                withContext(Dispatchers.IO) {
+                    ContactRepository(applicationContext, db.contactDao()).syncContactsWithDevice()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()  // Log any errors during sync
+            }
+
             try {
                 CallLogSyncManager.syncCallLogsToRoom(applicationContext, db)
             } catch (e: Exception) {
                 e.printStackTrace()  // Log any errors during sync
             }
 
+
             openMainActivity()
         }
+
+        /*lifecycleScope.launch(Dispatchers.IO) {
+            ContactRepository(applicationContext, db.contactDao()).syncContactsWithDevice()
+        }*/
     }
 
     private fun openMainActivity() {
