@@ -42,11 +42,11 @@ class SplashActivity : AppCompatActivity() {
 
         // 🔁 Run sync in global IO coroutine
         CoroutineScope(Dispatchers.IO).launch {
-            /*try {
+            try {
                 ContactRepository(applicationContext, db).syncContactsWithDevice()
             } catch (e: Exception) {
                 e.printStackTrace()
-            }*/
+            }
 
             try {
                 CallLogSyncManager.syncCallLogsToRoom(applicationContext, db)
