@@ -108,7 +108,8 @@ interface CallLogDao {
             AND response.duration > 0
             AND response.callType IN (1, 2)
       )
-      AND (:search IS NULL OR call.number LIKE '%' || :search || '%')
+           
+      AND (:search IS NULL OR call.name LIKE '%' || :search || '%' OR call.number LIKE '%' || :search || '%') 
       AND (:startDate IS NULL OR call.date >= :startDate)
       AND (:endDate IS NULL OR call.date <= :endDate)
     GROUP BY call.number

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/color_box_background" />
+
+        <TextView
+            android:text="ACCESS TO YOUR CALL - HISTORY"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="App would like to access your call history..."
+            android:textSize="14sp"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnAllowAccess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Allow Access"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#F9B000"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:text="It is Secure!"
+            android:layout_marginTop="12dp"
+            android:drawableLeft="@drawable/color_box_background"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Privacy Policy"
+            android:textColor="#000000"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</ScrollView>
