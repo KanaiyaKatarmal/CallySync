@@ -122,25 +122,25 @@ interface CallLogDao {
 
     // Not Attended Call after Miss Call
     @Query("""
-    SELECT * FROM calllog AS missed
-    WHERE missed.callType = 3
-      AND NOT EXISTS (
-        SELECT 1 FROM calllog AS callback
-        WHERE callback.callType IN (1, 2)
-          AND callback.number = missed.number
-          AND callback.date > missed.date
-          AND callback.duration > 0
-      )
-      AND missed.date = (
-        SELECT MAX(innerMissed.date) FROM calllog AS innerMissed
-        WHERE innerMissed.callType = 3
-          AND innerMissed.number = missed.number
-      )
-      AND (:search IS NULL OR missed.number LIKE '%' || :search || '%') 
-      AND (:startDate IS NULL OR missed.date >= :startDate)
-      AND (:endDate IS NULL OR missed.date <= :endDate)
-    GROUP BY missed.number
-    ORDER BY missed.date DESC
+SELECT * FROM calllog AS missed
+WHERE missed.callType IN (3, 5) -- Missed or Rejected incoming calls
+  AND NOT EXISTS (
+    SELECT 1 FROM calllog AS callback
+    WHERE callback.number = missed.number
+      AND callback.date > missed.date
+      AND callback.callType IN (1, 2) -- Incoming or outgoing
+      AND callback.duration > 0       -- Only if answered
+  )
+  AND missed.date = (
+    SELECT MAX(innerMissed.date) FROM calllog AS innerMissed
+    WHERE innerMissed.callType IN (3, 5)
+      AND innerMissed.number = missed.number
+  )
+  AND (:search IS NULL OR missed.name LIKE '%' || :search || '%' OR missed.number LIKE '%' || :search || '%') 
+  AND (:startDate IS NULL OR missed.date >= :startDate)
+  AND (:endDate IS NULL OR missed.date <= :endDate)
+GROUP BY missed.number
+ORDER BY missed.date DESC
 """)
     fun getLatestUnreturnedMissedCallsPerNumberPaging(
         search: String?,
