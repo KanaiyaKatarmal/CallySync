@@ -14,8 +14,8 @@ class CallerDashboardPagerAdapter(fragment: FragmentActivity, val name: String, 
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> CallerDashboardOverviewFragment.newInstance(name,number,startDate = startDate,endDate = endDate)
-            1 -> CallLogListFragment.newInstance(type=CallLogPageType.ALL,number=number, startDate = startDate,endDate = endDate)
+            0 -> CallerDashboardOverviewFragment.newInstance(name,number,startDate = null,endDate = null)
+            1 -> CallLogListFragment.newInstance(type=CallLogPageType.ALL,number=number, startDate = null,endDate = null)
             else -> Fragment()
         }
     }

@@ -91,6 +91,10 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         val filterButton = view.findViewById<ImageButton>(R.id.filterButton)
         val menuButton = view.findViewById<ImageButton>(R.id.menuButton)
 
+        val args = requireArguments()
+        number = args.getString(ARG_CALL_NUMBER)
+        searchBox.setText(number)
+
         adapter = CallLogListAdapter(object : OnCallLogItemClickListener {
             override fun onItemClick(entry: CallLogEntity) {
                 val intent = Intent(requireContext(), CallerDashboardActivity::class.java).apply {
