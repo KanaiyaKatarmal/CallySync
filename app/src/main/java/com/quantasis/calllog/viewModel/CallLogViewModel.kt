@@ -23,11 +23,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CallLogViewModel(private val repository: CallLogRepository,private val type: CallLogPageType) : ViewModel() {
+class CallLogViewModel(
+    private val repository: CallLogRepository,
+    private val type: CallLogPageType,
+    private val number: String? = null,
+    private val initialStartDate: Date? = null,
+    private val initialEndDate: Date? = null
+) : ViewModel() {
 
-    private val searchQuery = MutableStateFlow<String?>(null)
-    private val startDate = MutableStateFlow<Date?>(null)
-    private val endDate = MutableStateFlow<Date?>(null)
+    private val searchQuery = MutableStateFlow<String?>(number)
+    private val startDate = MutableStateFlow<Date?>(initialStartDate)
+    private val endDate = MutableStateFlow<Date?>(initialEndDate)
 
     val callLogs: Flow<PagingData<CallLogUiModel>> = combine(
         searchQuery, startDate, endDate
@@ -35,7 +41,7 @@ class CallLogViewModel(private val repository: CallLogRepository,private val typ
         Triple(query, start, end)
     }.flatMapLatest { (query, start, end) ->
         Pager(PagingConfig(pageSize = 20)) {
-            repository.getCallLogs(query, start, end,type)
+            repository.getCallLogs(query, start, end, type)
         }.flow
             .map { pagingData ->
                 pagingData.map { CallLogUiModel.Item(it) }.insertDateSeparators()

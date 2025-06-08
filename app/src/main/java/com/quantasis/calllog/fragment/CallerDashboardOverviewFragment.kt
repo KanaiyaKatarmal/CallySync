@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,17 +24,21 @@ import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.repository.CallerDashboardRepository
 import com.quantasis.calllog.util.CallConvertUtil
 import com.quantasis.calllog.viewModel.CallerDashboardOverviewViewModel
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 
 class CallerDashboardOverviewFragment : Fragment() {
 
     private lateinit var viewModel: CallerDashboardOverviewViewModel
     private lateinit var pieChartCalls: PieChart
+    private lateinit var dateRangeText: TextView
     private lateinit var pieChartDuration: PieChart
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CallerDashboardOverviewAdapter
 
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +50,17 @@ class CallerDashboardOverviewFragment : Fragment() {
     companion object {
         private const val ARG_MOB_NO = "mobile_number"
         private const val ARG_NAME= "name"
+        private const val ARG_START_DATE= "start_date"
+        private const val ARG_END_DATE= "end_date"
 
-        fun newInstance (name: String, number: String): CallerDashboardOverviewFragment {
+        fun newInstance (name: String, number: String,startDate: Date? =null,endDate: Date?=null): CallerDashboardOverviewFragment {
             return CallerDashboardOverviewFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_MOB_NO, number)
+                    putSerializable(ARG_NAME, name)
+                    putSerializable(ARG_START_DATE, startDate)
+                    putSerializable(ARG_END_DATE, endDate)
+
                 }
             }
         }
@@ -57,6 +69,7 @@ class CallerDashboardOverviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        dateRangeText =  view.findViewById(R.id.dateRangeText)
         pieChartCalls = view.findViewById(R.id.pieChartCalls)
         pieChartDuration = view.findViewById(R.id.pieChartDuration)
         recyclerView = view.findViewById(R.id.statsRecyclerView)
@@ -98,9 +111,15 @@ class CallerDashboardOverviewFragment : Fragment() {
         })[CallerDashboardOverviewViewModel::class.java]
 
         val mobileNumber = arguments?.getString(CallerDashboardOverviewFragment.ARG_MOB_NO) ?: return
-        val startDate = arguments?.getSerializable("start_date") as? Date
-        val endDate = arguments?.getSerializable("end_date") as? Date
+        val startDate = arguments?.getSerializable(CallerDashboardOverviewFragment.ARG_START_DATE) as? Date
+        val endDate = arguments?.getSerializable(CallerDashboardOverviewFragment.ARG_END_DATE) as? Date
 
+
+        if (startDate == null || endDate == null) {
+            dateRangeText.text = "No Date ange Selected"
+        } else {
+            dateRangeText.text = "${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}"
+        }
         viewModel.loadDashboardData(mobileNumber, startDate, endDate)
 
         viewModel.dashboardData.observe(viewLifecycleOwner) { data ->

@@ -37,10 +37,19 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     companion object {
         private const val ARG_CALL_TYPE = "arg_call_type"
 
-        fun newInstance(type: CallLogPageType): CallLogListFragment {
+        private const val ARG_CALL_NUMBER = "arg_call_number"
+
+        private const val ARG_CALL_START_DATE = "arg_call_startdate"
+
+        private const val ARG_CALL_END_DATE = "arg_call_enddate"
+
+        fun newInstance(type: CallLogPageType,number: String?=null,startDate: Date? =null,endDate: Date?=null): CallLogListFragment {
             return CallLogListFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_CALL_TYPE, type)
+                    putString(ARG_CALL_NUMBER, number)
+                    putSerializable(ARG_CALL_START_DATE, startDate)
+                    putSerializable(ARG_CALL_END_DATE, endDate)
                 }
             }
         }
@@ -49,14 +58,22 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     private lateinit var adapter: CallLogListAdapter
     private var startDate: Date? = null
     private var endDate: Date? = null
+    private var number: String? = null;
+
 
     private val viewModel: CallLogViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val callType = requireArguments().getSerializable(ARG_CALL_TYPE) as CallLogPageType
+
+                val args = requireArguments()
+                val callType = args.getSerializable(ARG_CALL_TYPE) as CallLogPageType
+                number = args.getString(ARG_CALL_NUMBER)
+                startDate = args.getSerializable(ARG_CALL_START_DATE) as? Date
+                endDate = args.getSerializable(ARG_CALL_END_DATE) as? Date
+
                 val dao = AppDatabase.getInstance(requireContext()).callLogDao()
                 val repo = CallLogRepository(dao)
-                return CallLogViewModel(repo, callType) as T
+                return CallLogViewModel(repo, callType, number, startDate, endDate) as T
             }
         }
     }
@@ -79,6 +96,8 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
                 val intent = Intent(requireContext(), CallerDashboardActivity::class.java).apply {
                     putExtra("name", entry.name)
                     putExtra("number", entry.number)
+                    putExtra("startDate", startDate?.time ?: -1L)
+                    putExtra("endDate", endDate?.time ?: -1L)
                 }
                 startActivity(intent)
             }
@@ -102,7 +121,7 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
                     Toast.makeText(context, "Filter Cleared", Toast.LENGTH_SHORT).show()
                     //dateRangeText.text = "No Date ange Selected"
                 } else {
-                    Toast.makeText(context, "Selected: $start to $end", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Selected: $start to $end", Toast.LENGTH_SHORT).show()
                     //dateRangeText.text = "${dateFormat.format(start)} - ${dateFormat.format(end)}"
                 }
                 startDate=start;

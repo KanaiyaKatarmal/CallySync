@@ -7,14 +7,16 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
 import pageradapter.CallerDashboardPagerAdapter
 import com.quantasis.calllog.database.AppDatabase
+import java.util.Date
 
 class CallerDashboardActivity : AppCompatActivity() {
 
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: CallerDashboardPagerAdapter
-    private lateinit var db: AppDatabase
 
+    private var startDate: Date? = null
+    private var endDate: Date? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_caller_dashboard)  // Your splash layout here
@@ -25,7 +27,13 @@ class CallerDashboardActivity : AppCompatActivity() {
         val name = intent.getStringExtra("name")!!
         val number = intent.getStringExtra("number")!!
 
-        adapter = CallerDashboardPagerAdapter(this, name, number)
+        val startDateLong = intent.getLongExtra("startDate", -1L)
+        val endDateLong = intent.getLongExtra("endDate", -1L)
+
+        startDate = if (startDateLong != -1L) Date(startDateLong) else null
+        endDate = if (endDateLong != -1L) Date(endDateLong) else null
+
+        adapter = CallerDashboardPagerAdapter(this, name, number,startDate,endDate)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
