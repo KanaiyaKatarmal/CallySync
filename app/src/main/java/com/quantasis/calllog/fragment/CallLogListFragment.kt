@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -68,9 +70,9 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         super.onViewCreated(view, savedInstanceState)
 
         val searchBox = view.findViewById<EditText>(R.id.searchEditText)
-        val startDateBtn = view.findViewById<Button>(R.id.startDateButton)
-        val endDateBtn = view.findViewById<Button>(R.id.endDateButton)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val filterButton = view.findViewById<ImageButton>(R.id.filterButton)
+        val menuButton = view.findViewById<ImageButton>(R.id.menuButton)
 
         adapter = CallLogListAdapter(object : OnCallLogItemClickListener {
             override fun onItemClick(entry: CallLogEntity) {
@@ -89,22 +91,44 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
             viewModel.setSearch(it.toString())
         }
 
-        // Start Date Picker
-        startDateBtn.setOnClickListener {
-            showDatePicker { date ->
-                startDate = date
-                startDateBtn.text = formatDate(date)
-                viewModel.setDateRange(startDate, endDate)
-            }
+
+
+        // Filter icon click
+        filterButton.setOnClickListener {
+            // TODO: Implement your filter action here
+
+            DateRangeDialogFragment { start, end ->
+                if (start == null || end == null) {
+                    Toast.makeText(context, "Filter Cleared", Toast.LENGTH_SHORT).show()
+                    //dateRangeText.text = "No Date ange Selected"
+                } else {
+                    Toast.makeText(context, "Selected: $start to $end", Toast.LENGTH_SHORT).show()
+                    //dateRangeText.text = "${dateFormat.format(start)} - ${dateFormat.format(end)}"
+                }
+                startDate=start;
+                endDate=end
+                viewModel.setDateRange(start, end)
+            }.show(parentFragmentManager, "DateRangeDialog")
         }
 
-        // End Date Picker
-        endDateBtn.setOnClickListener {
-            showDatePicker { date ->
-                endDate = date
-                endDateBtn.text = formatDate(date)
-                viewModel.setDateRange(startDate, endDate)
+        // 3-dot menu click showing popup
+        menuButton.setOnClickListener {
+            val popupMenu = android.widget.PopupMenu(requireContext(), menuButton)
+            popupMenu.menuInflater.inflate(R.menu.call_log_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_save_pdf -> {
+                        onSavePdfClicked()
+                        true
+                    }
+                    R.id.action_save_csv -> {
+                        onSaveCsvClicked()
+                        true
+                    }
+                    else -> false
+                }
             }
+            popupMenu.show()
         }
 
         // Observe paged data
@@ -115,22 +139,20 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         }
     }
 
-    private fun showDatePicker(onDateSelected: (Date) -> Unit) {
-        val calendar = Calendar.getInstance()
-        DatePickerDialog(
-            requireContext(),
-            { _, year, month, day ->
-                calendar.set(year, month, day, 0, 0, 0)
-                onDateSelected(calendar.time)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
-    }
+
 
     private fun formatDate(date: Date): String {
         val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         return formatter.format(date)
+    }
+
+    private fun onSavePdfClicked() {
+        // TODO: Add your logic to save call log as PDF here
+        Toast.makeText(requireContext(), "Save PDF clicked - implement PDF export", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onSaveCsvClicked() {
+        // TODO: Add your logic to save call log as CSV here
+        Toast.makeText(requireContext(), "Save CSV clicked - implement CSV export", Toast.LENGTH_SHORT).show()
     }
 }

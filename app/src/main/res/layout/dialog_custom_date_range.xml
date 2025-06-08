@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="20dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:text="Start Date"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/txtStartDate"
+        android:background="?attr/selectableItemBackground"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyyy-MM-dd"
+        android:drawableRight="@android:drawable/ic_menu_today"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/black" />
+
+    <View android:layout_height="16dp" android:layout_width="match_parent"/>
+
+    <TextView
+        android:text="End Date"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/txtEndDate"
+        android:background="?attr/selectableItemBackground"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyyy-MM-dd"
+        android:drawableRight="@android:drawable/ic_menu_today"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/black" />
+</LinearLayout>

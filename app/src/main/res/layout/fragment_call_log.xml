@@ -6,38 +6,44 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Search box -->
-    <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search by name or number"
-        android:inputType="text"
-        android:drawableStart="@android:drawable/ic_menu_search"
-        android:padding="8dp"
-        android:background="@android:drawable/edit_text" />
-
-    <!-- Date filters -->
+    <!-- Horizontal row with Search, Filter Icon, and 3-dot menu -->
     <LinearLayout
+        android:id="@+id/searchFilterMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/startDateButton"
+        <EditText
+            android:id="@+id/searchEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Start Date" />
+            android:hint="Search by name or number"
+            android:inputType="text"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:padding="8dp"
+            android:background="@android:drawable/edit_text" />
 
-        <Button
-            android:id="@+id/endDateButton"
-            android:layout_width="0dp"
+        <ImageButton
+            android:id="@+id/filterButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="End Date" />
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            android:contentDescription="Filter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp" />
+
+        <ImageButton
+            android:id="@+id/menuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            android:contentDescription="Menu"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp" />
     </LinearLayout>
+
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView

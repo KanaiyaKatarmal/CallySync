@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dateRangePickerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnToday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Today" />
+
+    <Button
+        android:id="@+id/btnYesterday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Yesterday"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnCurrentWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current Week"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnPreviousWeek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Previous Week"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnCurrentMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current Month"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnCustom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom Range"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnClearFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear Filter"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_red_dark" />
+
+</LinearLayout>
