@@ -1,10 +1,14 @@
 package com.quantasis.calllog.fragment
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.quantasis.calllog.R
@@ -18,44 +22,52 @@ class MoreFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_more, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+        val version = requireContext().packageManager
+            .getPackageInfo(requireContext().packageName, 0).versionName
+
+            view.findViewById<TextView>(R.id.appversion).setText(version);
+
+
         view.findViewById<LinearLayout>(R.id.setting_backup).setOnClickListener {
-            showToast("Settings Backup")
+            showToast("This is in Progress")
         }
 
         view.findViewById<LinearLayout>(R.id.setting_settings).setOnClickListener {
-            showToast("Settings clicked")
+            showToast("This is in Progress")
         }
 
         view.findViewById<LinearLayout>(R.id.setting_dialer).setOnClickListener {
-            showToast("Make Default Dialer clicked")
+            showToast("This is in Progress")
         }
 
         view.findViewById<LinearLayout>(R.id.setting_subscriptions).setOnClickListener {
-            showToast("Subscriptions clicked")
+            showToast("This is in Progress")
         }
 
         view.findViewById<LinearLayout>(R.id.setting_support).setOnClickListener {
-            showToast("Help & Support clicked")
+            openGmail("Support");
         }
 
         view.findViewById<LinearLayout>(R.id.setting_suggestions).setOnClickListener {
-            showToast("Suggestions clicked")
+            openGmail("Suggestions");
         }
 
         view.findViewById<LinearLayout>(R.id.setting_bug_report).setOnClickListener {
-            showToast("Bugs Report clicked")
+            openGmail("Bug");
         }
 
         view.findViewById<LinearLayout>(R.id.setting_share).setOnClickListener {
-            showToast("Share clicked")
+            shareIntent();
         }
 
         view.findViewById<LinearLayout>(R.id.setting_rate_app).setOnClickListener {
-            showToast("Rate App clicked")
+            redirectToPlayStore();
         }
 
         view.findViewById<LinearLayout>(R.id.setting_privacy).setOnClickListener {
@@ -65,5 +77,63 @@ class MoreFragment : Fragment() {
 
     private fun showToast(text: String) {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+    }
+
+    fun openGmail(title:String) {
+        try {
+
+            val version = requireContext().packageManager
+                .getPackageInfo(requireContext().packageName, 0).versionName
+
+            val intent = Intent("android.intent.action.SEND")
+            intent.putExtra(
+                "android.intent.extra.EMAIL",
+                arrayOf<String>(getString(R.string.toEmail))
+            )
+            val sb = StringBuilder()
+            sb.append(resources.getString(R.string.app_name))
+            sb.append(", $title ")
+            sb.append(", Version: ")
+            sb.append(version)
+            intent.putExtra("android.intent.extra.SUBJECT", sb.toString())
+            intent.putExtra("android.intent.extra.TEXT", "")
+            intent.setType("text/html")
+            intent.setPackage("com.google.android.gm")
+            startActivity(Intent.createChooser(intent, "Send mail"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun redirectToPlayStore() {
+        val str = "android.intent.action.VIEW"
+        val packageName: String? = context?.packageName
+        try {
+            val sb = java.lang.StringBuilder()
+            sb.append("market://details?id=")
+            sb.append(packageName)
+            startActivity(Intent(str, Uri.parse(sb.toString())))
+        } catch (unused: ActivityNotFoundException) {
+            val sb2 = java.lang.StringBuilder()
+            sb2.append("https://play.google.com/store/apps/details?id=")
+            sb2.append(packageName)
+            startActivity(Intent(str, Uri.parse(sb2.toString())))
+        }
+    }
+
+    fun shareIntent() {
+        try {
+            val intent = Intent("android.intent.action.SEND")
+            intent.setType("text/plain")
+            intent.putExtra("android.intent.extra.SUBJECT", resources.getString(R.string.app_name))
+            val sb = java.lang.StringBuilder()
+            sb.append("\nLet me recommend you this application\n\n")
+            sb.append("https://play.google.com/store/apps/details?id=")
+            sb.append(context?.getPackageName())
+            sb.append("\n\n")
+            intent.putExtra("android.intent.extra.TEXT", sb.toString())
+            startActivity(Intent.createChooser(intent, "Share"))
+        } catch (unused: java.lang.Exception) {
+        }
     }
 }

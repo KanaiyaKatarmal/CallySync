@@ -2,13 +2,91 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:paddingLeft="15dp"
+    android:padding="5dp">
+
+
 
     <LinearLayout
         android:id="@+id/settingsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="80dp"
+            android:layout_gravity="center"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="App Logo" />
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="App Name"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#222222" />
+
+        <!-- Social Icons Row -->
+        <LinearLayout
+            android:id="@+id/socialIcons"
+            android:layout_width="wrap_content"
+
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <!-- Each icon with margin -->
+            <ImageView
+                android:id="@+id/twitterIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_margin="8dp"
+                android:padding="10dp" />
+
+            <ImageView
+                android:id="@+id/instagramIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_margin="8dp"
+                android:padding="10dp" />
+
+            <ImageView
+                android:id="@+id/facebookIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_margin="8dp"
+                android:padding="10dp" />
+
+            <ImageView
+                android:id="@+id/telegramIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_margin="8dp"
+                android:padding="10dp" />
+
+            <ImageView
+                android:id="@+id/redditIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_margin="8dp"
+                android:padding="10dp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/setting_backup"
@@ -189,10 +267,11 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/appversion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text=" 1.3.4"
+                android:text=""
                 android:textColor="@android:color/darker_gray"
                 android:textSize="16sp" />
 

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Call Log</string>
+
+    <string name="toEmail" translatable="false">digital.katarmal@gmail.com</string>
 </resources>
