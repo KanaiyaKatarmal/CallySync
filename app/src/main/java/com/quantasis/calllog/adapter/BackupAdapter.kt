@@ -9,7 +9,7 @@ import com.quantasis.calllog.R
 import com.quantasis.calllog.datamodel.BackupItem
 
 class BackupAdapter(
-    private val items: List<BackupItem>,
+    private var items: List<BackupItem> = listOf(),
     private val onRestoreClick: (BackupItem) -> Unit,
     private val onViewClick: (BackupItem) -> Unit,
     private val onUploadClick: (BackupItem) -> Unit,
@@ -45,4 +45,9 @@ class BackupAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    fun updateData(newList: List<BackupItem>) {
+        items = newList
+        notifyDataSetChanged()
+    }
 }
