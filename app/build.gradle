@@ -8,6 +8,17 @@ android {
     namespace 'com.quantasis.calllog'
     compileSdk 35
 
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/*.kotlin_module"
+        }
+    }
+
     defaultConfig {
         applicationId "com.quantasis.calllog"
         minSdk 21
@@ -60,9 +71,16 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     kapt 'com.github.bumptech.glide:compiler:4.16.0'
 
+    implementation 'com.google.api-client:google-api-client-android:1.30.10'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev136-1.25.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.25.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
     implementation(libs.android.database.sqlcipher)
     // Paging 3 core
     implementation libs.androidx.paging.runtime
     implementation libs.androidx.fragment.ktx
     kapt "androidx.room:room-compiler:$roomVersion"
 }
+
+//apply plugin: 'com.google.gms.google-services'

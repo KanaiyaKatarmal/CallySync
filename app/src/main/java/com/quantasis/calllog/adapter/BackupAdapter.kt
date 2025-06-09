@@ -50,4 +50,10 @@ class BackupAdapter(
         items = newList
         notifyDataSetChanged()
     }
+
+    /*fun updateList(newList: List<BackupItem>) {
+        (items as MutableList).clear()
+        items.addAll(newList)
+        notifyDataSetChanged()
+    }*/
 }
