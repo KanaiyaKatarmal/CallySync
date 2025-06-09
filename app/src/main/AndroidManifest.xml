@@ -49,6 +49,14 @@
         </activity>
 
 
+        <activity android:name=".ui.LocalBackupActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".ui.DriveBackupActivity"
+            android:exported="true">
+        </activity>
+
 
         <receiver android:name=".receiver.CallReceiver"
             android:enabled="true"

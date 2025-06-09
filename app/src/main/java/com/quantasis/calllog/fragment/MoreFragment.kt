@@ -12,6 +12,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.quantasis.calllog.R
+import com.quantasis.calllog.ui.DriveBackupActivity
+import com.quantasis.calllog.ui.LocalBackupActivity
 
 class MoreFragment : Fragment() {
 
@@ -31,12 +33,18 @@ class MoreFragment : Fragment() {
         val version = requireContext().packageManager
             .getPackageInfo(requireContext().packageName, 0).versionName
 
-            view.findViewById<TextView>(R.id.appversion).setText(version);
+        view.findViewById<TextView>(R.id.appversion).text = version;
 
 
         view.findViewById<LinearLayout>(R.id.setting_backup).setOnClickListener {
-            showToast("This is in Progress")
+            startActivity(Intent(context,LocalBackupActivity::class.java))
         }
+
+        view.findViewById<LinearLayout>(R.id.setting_cloudbackup).setOnClickListener {
+            startActivity(Intent(context,DriveBackupActivity::class.java))
+        }
+
+
 
         view.findViewById<LinearLayout>(R.id.setting_settings).setOnClickListener {
             showToast("This is in Progress")
