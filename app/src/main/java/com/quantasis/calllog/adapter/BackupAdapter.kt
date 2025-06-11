@@ -11,8 +11,6 @@ import com.quantasis.calllog.datamodel.BackupItem
 class BackupAdapter(
     private var items: List<BackupItem> = listOf(),
     private val onRestoreClick: (BackupItem) -> Unit,
-    private val onViewClick: (BackupItem) -> Unit,
-    private val onUploadClick: (BackupItem) -> Unit,
     private val onDeleteClick: (BackupItem) -> Unit
 ) : RecyclerView.Adapter<BackupAdapter.BackupViewHolder>() {
 
@@ -21,8 +19,6 @@ class BackupAdapter(
         val fileLocationText: TextView = view.findViewById(R.id.fileLocationText)
         val fileDateText: TextView = view.findViewById(R.id.fileDateText)
         val btnRestore: TextView = view.findViewById(R.id.btnRestore)
-        val btnView: TextView = view.findViewById(R.id.btnView)
-        val btnUpload: TextView = view.findViewById(R.id.btnUpload)
         val btnDelete: TextView = view.findViewById(R.id.btnDelete)
     }
 
@@ -39,8 +35,6 @@ class BackupAdapter(
         holder.fileDateText.text = "Date: ${item.fileDate}"
 
         holder.btnRestore.setOnClickListener { onRestoreClick(item) }
-        holder.btnView.setOnClickListener { onViewClick(item) }
-        holder.btnUpload.setOnClickListener { onUploadClick(item) }
         holder.btnDelete.setOnClickListener { onDeleteClick(item) }
     }
 

@@ -3,6 +3,7 @@ package com.quantasis.calllog.database
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.quantasis.calllog.datamodel.CallSummaryByCategory
 import com.quantasis.calllog.datamodel.CallerDashboardData
@@ -14,6 +15,9 @@ import java.util.Date
 @Dao
 interface DownloadCallLogDao {
 
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCallLogs(callLogs: List<CallLogEntity>)
 
     @Query("""
         SELECT * FROM calllog 

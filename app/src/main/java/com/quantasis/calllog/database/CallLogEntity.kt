@@ -1,10 +1,12 @@
 package com.quantasis.calllog.database
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
 
-@Entity(tableName = "calllog")
+@Entity(tableName = "calllog",
+    indices = [Index(value = ["number", "date"], unique = true)])
 data class CallLogEntity(
     val name: String?,
     val rawNumber: String,

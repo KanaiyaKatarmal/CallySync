@@ -30,7 +30,11 @@ import com.google.api.services.drive.model.File
 import com.google.api.services.drive.model.FileList
 import com.quantasis.calllog.R
 import com.quantasis.calllog.adapter.BackupAdapter
+import com.quantasis.calllog.database.AppDatabase
+import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.datamodel.BackupItem
+import com.quantasis.calllog.repository.CallLogPageType
+import com.quantasis.calllog.repository.DownloadCallLogRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -72,9 +76,16 @@ class DriveBackupActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.backupNow).setOnClickListener {
-            val fileName = "Backup_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}.txt"
-            val content = "This is a sample backup file created at ${SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault()).format(Date())}"
-            saveFileToDrive(fileName, content)
+            lifecycleScope.launch {
+                val callLogs = fetchCallLogs()
+
+                // Convert callLogs to JSON
+                val gson = com.google.gson.Gson()
+                val jsonString = gson.toJson(callLogs)
+
+                val fileName = "Backup_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}.json"
+                saveFileToDrive(fileName, jsonString)
+            }
         }
 
         btnDriveLogin.setOnClickListener { signIn() }
@@ -155,7 +166,7 @@ class DriveBackupActivity : AppCompatActivity() {
         btnDriveLogin.visibility = View.VISIBLE
         btnDriveLogout.visibility = View.GONE
         tvEmail.text = "Sign in Google Drive to View or Restore and Create Backup"
-        backupRecyclerView.adapter = BackupAdapter(emptyList(), {}, {}, {}, {})
+        backupRecyclerView.adapter = BackupAdapter(emptyList(), {}, {})
     }
 
     private fun showLoading(message: String = "Loading...") {
@@ -229,11 +240,11 @@ class DriveBackupActivity : AppCompatActivity() {
 
                 val metadata = File().apply {
                     name = fileName
-                    mimeType = "text/plain"
+                    mimeType = "application/json"
                     parents = listOf(backupFolderId)
                 }
 
-                val contentStream = ByteArrayContent.fromString("text/plain", fileContent)
+                val contentStream = ByteArrayContent.fromString("application/json", fileContent)
                 driveService.files().create(metadata, contentStream)
                     .setFields("id, name")
                     .execute()
@@ -261,15 +272,7 @@ class DriveBackupActivity : AppCompatActivity() {
                 files,
                 onRestoreClick = { file ->
                     Toast.makeText(this@DriveBackupActivity, "Restoring ${file.fileName}", Toast.LENGTH_SHORT).show()
-                    // Implement restore functionality here
-                },
-                onViewClick = { file ->
-                    Toast.makeText(this@DriveBackupActivity, "Viewing ${file.fileName}", Toast.LENGTH_SHORT).show()
-                    // Implement view functionality here
-                },
-                onUploadClick = { file ->
-                    Toast.makeText(this@DriveBackupActivity, "Uploading ${file.fileName}", Toast.LENGTH_SHORT).show()
-                    // Implement upload functionality here
+                    restoreBackupFile(file)
                 },
                 onDeleteClick = { file ->
                     Toast.makeText(this@DriveBackupActivity, "Deleting ${file.fileName}", Toast.LENGTH_SHORT).show()
@@ -326,5 +329,50 @@ class DriveBackupActivity : AppCompatActivity() {
                 hideLoading()
             }
         }
+    }
+
+    private fun restoreBackupFile(file: BackupItem) {
+        showLoading("Restoring backup...")
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // 1. Download file content from Drive
+                val outputStream = java.io.ByteArrayOutputStream()
+                driveService.files().get(file.fileLocation).executeMediaAndDownloadTo(outputStream)
+                val fileContent = outputStream.toString("UTF-8")
+
+                // 2. Parse JSON into List<CallLogEntity>
+                val gson = com.google.gson.GsonBuilder()
+                    .setDateFormat("MMM dd, yyyy hh:mm:ss a") // <-- IMPORTANT: match your date format in JSON
+                    .create()
+                val type = object : com.google.gson.reflect.TypeToken<List<CallLogEntity>>() {}.type
+                val callLogs: List<CallLogEntity> = gson.fromJson(fileContent, type)
+
+                // 3. Insert into Room DB
+                val dao = AppDatabase.getInstance(applicationContext).downloadCallLogDao()
+                dao.insertCallLogs(callLogs)
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@DriveBackupActivity, "Restore completed successfully", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@DriveBackupActivity, "Restore failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                hideLoading()
+            }
+        }
+    }
+
+    private suspend fun fetchCallLogs(): List<CallLogEntity> = withContext(Dispatchers.IO) {
+        val dao = AppDatabase.getInstance(applicationContext).downloadCallLogDao()
+        val repo = DownloadCallLogRepository(dao)
+        repo.getCallLogsList(
+            search = null,
+            startDate = null,
+            endDate = null,
+            type = CallLogPageType.ALL
+        )
     }
 }
