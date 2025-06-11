@@ -3,6 +3,12 @@ package com.quantasis.calllog.fragment
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
@@ -180,31 +186,12 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     }
 
     private fun onSavePdfClicked() {
-        // TODO: Add your logic to save call log as PDF here
-        Toast.makeText(requireContext(), "Save PDF clicked - implement PDF export", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun onSaveCsvClicked() {
         lifecycleScope.launch {
             showProgressDialog()
-
             try {
-                val callLogs = withContext(Dispatchers.IO) {
-                    val dao = AppDatabase.getInstance(requireContext()).downloadCallLogDao()
-                    val repo = DownloadCallLogRepository(dao)
-
-                    repo.getCallLogsList(
-                        search = view?.findViewById<EditText>(R.id.searchEditText)?.text?.toString(),
-                        startDate = startDate,
-                        endDate = endDate,
-                        type = arguments?.getSerializable(ARG_CALL_TYPE) as CallLogPageType
-                    )
-                }
-
+                val callLogs = fetchCallLogs()
                 if (callLogs.isNotEmpty()) {
-                    val file = withContext(Dispatchers.IO) {
-                        saveCsvToFile(callLogs)
-                    }
+                    val file = savePdfToFile(callLogs)
                     dismissProgressDialog()
                     showReportGeneratedDialog(file)
                 } else {
@@ -214,10 +201,44 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
             } catch (e: Exception) {
                 dismissProgressDialog()
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Error while exporting CSV", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error while exporting PDF", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+    private fun onSaveCsvClicked() {
+        lifecycleScope.launch {
+            showProgressDialog()
+            try {
+                val callLogs = fetchCallLogs()
+                if (callLogs.isNotEmpty()) {
+                    val file = saveCsvToFile(callLogs)
+                    dismissProgressDialog()
+                    showReportGeneratedDialog(file)
+                } else {
+                    dismissProgressDialog()
+                    Toast.makeText(requireContext(), "No data to export", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                dismissProgressDialog()
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Error while exporting PDF", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun fetchCallLogs(): List<CallLogEntity> = withContext(Dispatchers.IO) {
+        val dao = AppDatabase.getInstance(requireContext()).downloadCallLogDao()
+        val repo = DownloadCallLogRepository(dao)
+        repo.getCallLogsList(
+            search = view?.findViewById<EditText>(R.id.searchEditText)?.text?.toString(),
+            startDate = startDate,
+            endDate = endDate,
+            type = arguments?.getSerializable(ARG_CALL_TYPE) as CallLogPageType
+        )
+    }
+
+
 
     private suspend fun saveCsvToFile(callLogs: List<CallLogEntity>) : File = withContext(Dispatchers.IO) {
         val fileName = "call_log_${System.currentTimeMillis()}.csv"
@@ -291,5 +312,81 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         intent.setDataAndType(uri, CallConvertUtil.getMimeType(file))
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivity(intent)
+    }
+
+    private suspend fun savePdfToFile(callLogs: List<CallLogEntity>): File = withContext(Dispatchers.IO) {
+        val fileName = "call_log_${System.currentTimeMillis()}.pdf"
+        val file = File(getFilePath(), fileName)
+
+        val pageWidth = 595
+        val pageHeight = 842
+        val margin = 40f
+
+        val pdfDocument = PdfDocument()
+        val paint = Paint().apply { textSize = 12f }
+        val boldPaint = Paint().apply { textSize = 14f; typeface = Typeface.DEFAULT_BOLD }
+
+        val headers = listOf("Name", "Number", "Date", "Duration", "CallType")
+        val columnWidths = listOf(120f, 100f, 130f, 80f, 100f)
+
+        val logoBitmap = loadLogo()  // <- call safe version here
+
+        var pageNumber = 1
+        var yPosition = 0f
+        var page: PdfDocument.Page? = null
+        var canvas: Canvas? = null
+
+        fun startNewPage() {
+            val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+            page = pdfDocument.startPage(pageInfo)
+            canvas = page?.canvas
+            pageNumber++
+
+            if (logoBitmap != null) {
+                val scaledLogo = Bitmap.createScaledBitmap(logoBitmap, 150, 150, true)
+                canvas?.drawBitmap(scaledLogo, (pageWidth - scaledLogo.width) / 2f, margin, paint)
+                yPosition = margin + 150f + 30f
+            } else {
+                yPosition = margin
+            }
+
+            var xPosition = margin
+            for ((index, header) in headers.withIndex()) {
+                canvas?.drawText(header, xPosition, yPosition, boldPaint)
+                xPosition += columnWidths[index]
+            }
+            yPosition += 25f
+        }
+
+        startNewPage()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        for (log in callLogs) {
+            if (yPosition > pageHeight - margin - 40) {
+                page?.let { pdfDocument.finishPage(it) }
+                startNewPage()
+            }
+            var xPosition = margin
+            val values = listOf(
+                log.name ?: "Unknown", log.number, dateFormat.format(log.date),
+                CallConvertUtil.formatDuration(log.duration), CallConvertUtil.callTypeToString(log.callType)
+            )
+            for ((index, value) in values.withIndex()) {
+                canvas?.drawText(value, xPosition, yPosition, paint)
+                xPosition += columnWidths[index]
+            }
+            yPosition += 20f
+        }
+        page?.let { pdfDocument.finishPage(it) }
+        file.outputStream().use { pdfDocument.writeTo(it) }
+        pdfDocument.close()
+        file
+    }
+    private fun loadLogo(): Bitmap? {
+        return try {
+            BitmapFactory.decodeResource(requireContext().resources, R.drawable.ic_launcher_background)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }
