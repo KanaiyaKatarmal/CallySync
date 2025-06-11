@@ -1,13 +1,16 @@
 package com.quantasis.calllog.fragment
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -25,8 +28,13 @@ import androidx.fragment.app.viewModels
 import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.repository.CallLogPageType
+import com.quantasis.calllog.repository.DownloadCallLogRepository
 import com.quantasis.calllog.ui.CallerDashboardActivity
+import com.quantasis.calllog.util.CallConvertUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -59,6 +67,8 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     private var startDate: Date? = null
     private var endDate: Date? = null
     private var number: String? = null;
+    private lateinit var progressDialog: AlertDialog
+
 
 
     private val viewModel: CallLogViewModel by viewModels {
@@ -175,7 +185,111 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     }
 
     private fun onSaveCsvClicked() {
-        // TODO: Add your logic to save call log as CSV here
-        Toast.makeText(requireContext(), "Save CSV clicked - implement CSV export", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            showProgressDialog()
+
+            try {
+                val callLogs = withContext(Dispatchers.IO) {
+                    val dao = AppDatabase.getInstance(requireContext()).downloadCallLogDao()
+                    val repo = DownloadCallLogRepository(dao)
+
+                    repo.getCallLogsList(
+                        search = view?.findViewById<EditText>(R.id.searchEditText)?.text?.toString(),
+                        startDate = startDate,
+                        endDate = endDate,
+                        type = arguments?.getSerializable(ARG_CALL_TYPE) as CallLogPageType
+                    )
+                }
+
+                if (callLogs.isNotEmpty()) {
+                    val file = withContext(Dispatchers.IO) {
+                        saveCsvToFile(callLogs)
+                    }
+                    dismissProgressDialog()
+                    showReportGeneratedDialog(file)
+                } else {
+                    dismissProgressDialog()
+                    Toast.makeText(requireContext(), "No data to export", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                dismissProgressDialog()
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Error while exporting CSV", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun saveCsvToFile(callLogs: List<CallLogEntity>) : File = withContext(Dispatchers.IO) {
+        val fileName = "call_log_${System.currentTimeMillis()}.csv"
+        val file = File(getFilePath(), fileName)
+
+        file.bufferedWriter().use { out ->
+            out.write("Name,Number,Date,Duration,CallType\n")
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            for (log in callLogs) {
+                val dateStr = formatter.format(log.date)
+                out.write("${log.name ?: "Unknown"},${log.number},${dateStr},${CallConvertUtil.formatDuration(log.duration)},${CallConvertUtil.callTypeToString(log.callType)}\n")
+            }
+        }
+        file
+    }
+
+    private fun getFilePath(): File {
+        val backUpFilePath: File= Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS + "/" + getString(R.string.app_name) + "/Report/"
+        )
+        if (!backUpFilePath.isDirectory) {
+            backUpFilePath.mkdirs()
+        }
+        return backUpFilePath;
+    }
+
+    private fun showProgressDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(R.layout.dialog_progress) // create simple progress layout xml
+        builder.setCancelable(false)
+        progressDialog = builder.create()
+        progressDialog.show()
+    }
+
+    private fun dismissProgressDialog() {
+        if (this::progressDialog.isInitialized) {
+            progressDialog.dismiss()
+        }
+    }
+
+    private fun showReportGeneratedDialog(file: File) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Successfully")
+        builder.setMessage("Report generated into:\n${file.absolutePath}")
+
+        builder.setPositiveButton("Share") { dialog, _ ->
+            shareFile(file)
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Open Report") { dialog, _ ->
+            openFile(file)
+            dialog.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun shareFile(file: File) {
+        val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = CallConvertUtil.getMimeType(file)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(Intent.createChooser(intent, "Share Report"))
+    }
+
+    private fun openFile(file: File) {
+        val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, CallConvertUtil.getMimeType(file))
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(intent)
     }
 }

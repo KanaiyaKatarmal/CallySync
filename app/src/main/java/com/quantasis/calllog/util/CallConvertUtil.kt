@@ -1,6 +1,8 @@
 package com.quantasis.calllog.util
 
 import android.graphics.Color
+import android.webkit.MimeTypeMap
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -54,5 +56,11 @@ object CallConvertUtil {
 
     fun getColor(category: Int): Int {
         return categoryColorMap[category] ?: Color.LTGRAY
+    }
+
+    fun getMimeType(file: File): String {
+        val extension = file.extension.lowercase(Locale.getDefault())
+        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        return mimeType ?: "*/*"
     }
 }

@@ -19,6 +19,9 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun contactDao(): ContactDao
 
+    abstract fun downloadCallLogDao(): DownloadCallLogDao
+
+
     companion object {
         private const val DB_NAME = "Instagram.db"
         private const val DB_PASSWORD = "myStrongPassword" // Ideally from secure source
