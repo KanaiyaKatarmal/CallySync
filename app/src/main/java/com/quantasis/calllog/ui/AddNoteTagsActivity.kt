@@ -1,6 +1,8 @@
 package com.quantasis.calllog.ui
 
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -22,52 +24,92 @@ class AddNoteTagsActivity : AppCompatActivity() {
     private var callLogId: Int = 0
 
     private lateinit var editTextNote: EditText
-    private lateinit var editTextTags: EditText
+    private lateinit var editTextTagInput: EditText
     private lateinit var chipGroup: ChipGroup
+    private lateinit var buttonSave: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note_tags)
 
+        // Initialize DAO
         callLogDao = AppDatabase.getInstance(this).callLogDao()
 
         callLogId = intent.getIntExtra("CALL_LOG_ID", 0)
 
+        // Initialize views
         editTextNote = findViewById(R.id.editTextNote)
-        editTextTags = findViewById(R.id.editTextTags)
+        editTextTagInput = findViewById(R.id.editTextTagInput)
         chipGroup = findViewById(R.id.chipGroup)
+        buttonSave = findViewById(R.id.buttonSave)
 
-        editTextTags.addTextChangedListener{
-            val tags = it.toString().split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            updateChips(tags)
-        }
+        setupTagInput()
 
-        findViewById<Button>(R.id.buttonSave).setOnClickListener {
+        buttonSave.setOnClickListener {
             saveNoteAndTags()
         }
 
         loadExistingData()
     }
 
-    private fun updateChips(tags: List<String>) {
-        chipGroup.removeAllViews()
-        tags.forEach { tag ->
-            val chip = Chip(this)
-            chip.text = tag
-            chip.isCloseIconVisible = true
-            chip.setOnCloseIconClickListener {
-                chipGroup.removeView(chip)
+    private fun setupTagInput() {
+        // Handle comma, space, or newline entry while typing
+        editTextTagInput.addTextChangedListener { editable ->
+            editable?.let {
+                if (it.endsWith(",") || it.endsWith(" ") || it.endsWith("\n")) {
+                    val tag = it.trimEnd(',', ' ', '\n').toString().trim()
+                    if (tag.isNotEmpty()) {
+                        addChip(tag)
+                    }
+                    editTextTagInput.text.clear()
+                }
+            }
+        }
+
+        // Handle Done button on keyboard
+        editTextTagInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val tag = editTextTagInput.text.toString().trim()
+                if (tag.isNotEmpty()) {
+                    addChip(tag)
+                    editTextTagInput.text.clear()
+                }
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun addChip(tag: String) {
+        if (!isChipAlreadyExists(tag)) {
+            val chip = Chip(this).apply {
+                text = tag
+                isCloseIconVisible = true
+                setOnCloseIconClickListener {
+                    chipGroup.removeView(this)
+                }
             }
             chipGroup.addView(chip)
         }
     }
 
+    private fun isChipAlreadyExists(tag: String): Boolean {
+        for (i in 0 until chipGroup.childCount) {
+            val chip = chipGroup.getChildAt(i) as Chip
+            if (chip.text.toString().equals(tag, ignoreCase = true)) {
+                return true
+            }
+        }
+        return false
+    }
+
     private fun saveNoteAndTags() {
         val note = editTextNote.text.toString()
-        val tags = (0 until chipGroup.childCount).map {
-            val chip = chipGroup.getChildAt(it) as Chip
+        val tags = (0 until chipGroup.childCount).joinToString(",") { index ->
+            val chip = chipGroup.getChildAt(index) as Chip
             chip.text.toString()
-        }.joinToString(",")
+        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             callLogDao.updateNoteAndTags(callLogId, note, tags)
@@ -83,7 +125,11 @@ class AddNoteTagsActivity : AppCompatActivity() {
             val log = callLogDao.getById(callLogId)
             withContext(Dispatchers.Main) {
                 editTextNote.setText(log?.note ?: "")
-                log?.tags?.split(",")?.let { updateChips(it) }
+                log?.tags?.split(",")?.forEach { tag ->
+                    if (tag.isNotBlank()) {
+                        addChip(tag)
+                    }
+                }
             }
         }
     }

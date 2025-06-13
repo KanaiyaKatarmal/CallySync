@@ -7,32 +7,53 @@
     android:padding="16dp"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write Note"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
+
+    <!-- Note input remains same -->
     <EditText
         android:id="@+id/editTextNote"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:hint="Write Note"
         android:gravity="top"
-        android:inputType="textMultiLine"/>
+        android:inputType="textMultiLine" />
 
-    <EditText
-        android:id="@+id/editTextTags"
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add Tags (comma separated)" />
+        android:hint="Tag"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
 
+
+    <!-- ChipGroup to display added tags -->
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:singleLine="false"
         app:singleSelection="false"
-        app:chipSpacing="8dp"/>
+        app:chipSpacing="8dp" />
+
+    <!-- EditText to enter tags -->
+    <EditText
+        android:id="@+id/editTextTagInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter tags and press Enter/Comma/Space"
+        android:imeOptions="actionDone"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Save" />
 </LinearLayout>
