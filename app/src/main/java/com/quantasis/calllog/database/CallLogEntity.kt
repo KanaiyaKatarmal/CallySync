@@ -16,6 +16,8 @@ data class CallLogEntity(
     val duration: Int,
     val callType: Int,
 
+    val note: String? = null,
+    val tags: String? = null,
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

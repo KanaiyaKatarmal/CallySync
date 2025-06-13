@@ -35,6 +35,7 @@ import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.repository.CallLogPageType
 import com.quantasis.calllog.repository.DownloadCallLogRepository
+import com.quantasis.calllog.ui.AddNoteTagsActivity
 import com.quantasis.calllog.ui.CallerDashboardActivity
 import com.quantasis.calllog.util.CallConvertUtil
 import kotlinx.coroutines.Dispatchers
@@ -118,6 +119,15 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
                     putExtra("number", entry.number)
                     putExtra("startDate", startDate?.time ?: -1L)
                     putExtra("endDate", endDate?.time ?: -1L)
+                }
+                startActivity(intent)
+            }
+        },object : OnCallLogItemClickListener {
+            override fun onItemClick(entry: CallLogEntity) {
+                val intent = Intent(requireContext(), AddNoteTagsActivity::class.java).apply {
+                    putExtra("name", entry.name)
+                    putExtra("number", entry.number)
+                    putExtra("CALL_LOG_ID", entry.id)
                 }
                 startActivity(intent)
             }

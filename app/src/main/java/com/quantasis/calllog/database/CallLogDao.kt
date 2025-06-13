@@ -17,6 +17,14 @@ interface CallLogDao {
     suspend fun insert(log: CallLogEntity)
 
     @Query("""
+        UPDATE calllog SET note = :note, tags = :tags WHERE id = :id
+    """)
+    suspend fun updateNoteAndTags(id: Int, note: String?, tags: String?)
+
+    @Query("SELECT * FROM calllog WHERE id = :id")
+    suspend fun getById(id: Int): CallLogEntity?
+
+    @Query("""
         SELECT * FROM calllog 
         WHERE (:search IS NULL OR name LIKE '%' || :search || '%' OR number LIKE '%' || :search || '%') 
         AND (:startDate IS NULL OR date >= :startDate)

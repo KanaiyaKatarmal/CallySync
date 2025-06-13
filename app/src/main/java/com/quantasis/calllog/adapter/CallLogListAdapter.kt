@@ -14,7 +14,7 @@ import com.quantasis.calllog.util.CallConvertUtil
 import com.quantasis.calllog.viewModel.CallLogUiModel
 
 class CallLogListAdapter (
-    private val listener: OnCallLogItemClickListener
+    private val listener: OnCallLogItemClickListener,private val addNotlistener: OnCallLogItemClickListener
 ): PagingDataAdapter<CallLogUiModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -39,7 +39,7 @@ class CallLogListAdapter (
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             TYPE_HEADER -> DateHeaderViewHolder(inflater.inflate(R.layout.item_date_separator, parent, false))
-            else -> CallLogViewHolder(inflater.inflate(R.layout.item_call_log, parent, false),listener)
+            else -> CallLogViewHolder(inflater.inflate(R.layout.item_call_log, parent, false),listener,addNotlistener)
         }
     }
 
@@ -51,7 +51,7 @@ class CallLogListAdapter (
         }
     }
 
-    class CallLogViewHolder(view: View,private val listener: OnCallLogItemClickListener) : RecyclerView.ViewHolder(view) {
+    class CallLogViewHolder(view: View,private val listener: OnCallLogItemClickListener,private val addNotlistener: OnCallLogItemClickListener) : RecyclerView.ViewHolder(view) {
         fun bind(entry: CallLogEntity) {
             itemView.findViewById<TextView>(R.id.nameTextView).text = entry.name ?: "Unknown"
             itemView.findViewById<TextView>(R.id.numberTextView).text = entry.rawNumber
@@ -60,6 +60,10 @@ class CallLogListAdapter (
             itemView.findViewById<TextView>(R.id.dateTextView).text = "Date: ${CallConvertUtil.formatDate(entry.date)}"
 
             itemView.findViewById<TextView>(R.id.callTypeTextView).text = "Type: ${CallConvertUtil.callTypeToString(entry.callType)}"
+
+            itemView.findViewById<TextView>(R.id.numberTextView).setOnClickListener {
+                addNotlistener.onItemClick(entry)
+            }
 
             itemView.setOnClickListener {
                 listener.onItemClick(entry)
