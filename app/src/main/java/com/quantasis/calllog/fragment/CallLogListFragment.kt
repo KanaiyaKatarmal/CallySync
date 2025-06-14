@@ -95,10 +95,10 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
         }
     }
 
-    override fun onResume() {
+   /* override fun onResume() {
         super.onResume()
         adapter.refresh()
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
