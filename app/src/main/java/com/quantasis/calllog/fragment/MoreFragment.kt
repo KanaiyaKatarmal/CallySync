@@ -2,6 +2,7 @@ package com.quantasis.calllog.fragment
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +13,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.quantasis.calllog.R
+import com.quantasis.calllog.fivestarslibrary.FiveStarsDialog
 import com.quantasis.calllog.ui.DriveBackupActivity
 import com.quantasis.calllog.ui.LocalBackupActivity
+
 
 class MoreFragment : Fragment() {
 
@@ -75,7 +78,17 @@ class MoreFragment : Fragment() {
         }
 
         view.findViewById<LinearLayout>(R.id.setting_rate_app).setOnClickListener {
-            redirectToPlayStore();
+            //redirectToPlayStore();
+
+            val fiveStarsDialog = FiveStarsDialog(requireContext(), "abc@gmail.com")
+            fiveStarsDialog.setRateText("Taking a few seconds to rate an app is vey important for the developer.")
+                .setTitle("Please Rate the App")
+                .setForceMode(false)
+                //.setStarColor(Color.YELLOW)
+                .setUpperBound(4) // Market opened if a rating >= 4 is selected
+                .setNegativeReviewListener(null) // OVERRIDE mail intent for negative review
+                .setReviewListener(null) // Used to listen for reviews (if you want to track them )
+                .show(true)
         }
 
         view.findViewById<LinearLayout>(R.id.setting_privacy).setOnClickListener {
