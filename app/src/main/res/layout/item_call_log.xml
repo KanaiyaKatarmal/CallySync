@@ -29,5 +29,41 @@
         android:layout_height="wrap_content"
         android:text="Call Type" />
 
+    <LinearLayout
+        android:id="@+id/noteTagLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!-- Add Note -->
+    <TextView
+        android:id="@+id/noteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textColor="@android:color/holo_blue_dark"
+        android:paddingTop="4dp"
+        android:visibility="gone"/>
+
+    <!-- Add Tags -->
+    <TextView
+        android:id="@+id/tagsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_blue_dark"
+        android:paddingTop="2dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/emptyNoteTagTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Note and Tag"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:paddingTop="4dp"/>
+    </LinearLayout>
+
 
 </LinearLayout>
