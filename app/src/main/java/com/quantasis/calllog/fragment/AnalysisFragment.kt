@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +17,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
-import pageradapter.AnalysisPagerAdapter
+import com.quantasis.calllog.pageradapter.AnalysisPagerAdapter
 import com.quantasis.calllog.database.AppDatabase
 import com.quantasis.calllog.datamodel.CallerDashboardData
 import com.quantasis.calllog.repository.CallerDashboardRepository
@@ -75,6 +76,20 @@ class AnalysisFragment : Fragment() {
         pieChartDuration = view.findViewById(R.id.pieChartDuration)
         tabLayout = view.findViewById(R.id.tabLayout)
         viewPager = view.findViewById(R.id.viewPager)
+
+        val chartCallsBtn = view.findViewById<TextView>(R.id.chartCallsBtn)
+        val chartDurationBtn = view.findViewById<TextView>(R.id.chartDurationBtn)
+
+        // Handle click events to switch charts
+        chartCallsBtn.setOnClickListener {
+            pieChart.visibility = View.VISIBLE
+            pieChartDuration.visibility = View.GONE
+        }
+
+        chartDurationBtn.setOnClickListener {
+            pieChart.visibility = View.GONE
+            pieChartDuration.visibility = View.VISIBLE
+        }
 
         setupPieChart()
         setupViewPagerAndTabs()

@@ -5,8 +5,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
-import pageradapter.CallerDashboardPagerAdapter
-import com.quantasis.calllog.database.AppDatabase
+import com.quantasis.calllog.pageradapter.CallerDashboardPagerAdapter
 import java.util.Date
 
 class CallerDashboardActivity : AppCompatActivity() {
@@ -24,7 +23,7 @@ class CallerDashboardActivity : AppCompatActivity() {
         tabLayout = findViewById(R.id.tab_layout)
         viewPager = findViewById(R.id.view_pager)
 
-        val name = intent.getStringExtra("name")!!
+        val name = intent.getStringExtra("name") ?: "Unknown"
         val number = intent.getStringExtra("number")!!
 
         val startDateLong = intent.getLongExtra("startDate", -1L)

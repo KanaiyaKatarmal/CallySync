@@ -9,7 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.quantasis.calllog.R
-import pageradapter.HomePagerAdapter
+import com.quantasis.calllog.pageradapter.HomePagerAdapter
 
 class CallsFragment : Fragment() {
     private lateinit var tabLayout: TabLayout

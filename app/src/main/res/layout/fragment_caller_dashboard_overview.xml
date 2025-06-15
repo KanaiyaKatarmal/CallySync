@@ -16,19 +16,97 @@
 
 
 
-    <!-- Pie Chart -->
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChartCalls"
+    <!-- Single PieChart Area -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp">
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChartDuration"
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChartCalls"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChartDuration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </FrameLayout>
+    <!-- Control Buttons to switch charts -->
+    <LinearLayout
+        android:id="@+id/chartSwitcherLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
 
+        <TextView
+            android:id="@+id/chartCallsBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Calls Chart"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/chartDurationBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Duration Chart"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+
+    <!-- Table Header -->
+    <LinearLayout
+        android:id="@+id/tableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/table_row_border"
+        android:padding="8dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/headerCategory"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/headerDuration"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Duration"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/headerCalls"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Calls"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center" />
+    </LinearLayout>
     <!-- RecyclerView for Table -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/statsRecyclerView"

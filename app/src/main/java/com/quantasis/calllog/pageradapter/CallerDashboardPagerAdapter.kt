@@ -1,4 +1,4 @@
-package pageradapter
+package com.quantasis.calllog.pageradapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

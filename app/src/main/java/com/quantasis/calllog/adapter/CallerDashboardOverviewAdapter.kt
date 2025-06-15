@@ -22,12 +22,16 @@ class CallerDashboardOverviewAdapter : ListAdapter<CallerDashboardData, CallerDa
 ) {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: CallerDashboardData) {
-            itemView.findViewById<TextView>(R.id.callTypeText).text = "Type: ${CallConvertUtil.callTypeToString(item.callCategory)}"
-            itemView.findViewById<TextView>(R.id.countText).text = "Count: ${item.count}"
-            itemView.findViewById<TextView>(R.id.durationText).text =  "Duration: ${CallConvertUtil.formatDuration(item.totalDuration)}"
+            val categoryText = if (item.callCategory == 999) "All" else CallConvertUtil.callTypeToString(item.callCategory)
+            val durationText = if (item.totalDuration > 0) CallConvertUtil.formatDuration(item.totalDuration) else "-"
+            val countText = "${item.count} Calls"
+
+            itemView.findViewById<TextView>(R.id.categoryText).text = categoryText
+            itemView.findViewById<TextView>(R.id.durationText).text = durationText
+            itemView.findViewById<TextView>(R.id.countText).text = countText
+
             val color = CallConvertUtil.getColor(item.callCategory)
             itemView.findViewById<View>(R.id.colorBox).setBackgroundColor(color)
-
         }
     }
 
@@ -40,6 +44,4 @@ class CallerDashboardOverviewAdapter : ListAdapter<CallerDashboardData, CallerDa
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
-
 }

@@ -73,10 +73,26 @@ class CallerDashboardOverviewFragment : Fragment() {
         pieChartCalls = view.findViewById(R.id.pieChartCalls)
         pieChartDuration = view.findViewById(R.id.pieChartDuration)
         recyclerView = view.findViewById(R.id.statsRecyclerView)
+
+        val chartCallsBtn = view.findViewById<TextView>(R.id.chartCallsBtn)
+        val chartDurationBtn = view.findViewById<TextView>(R.id.chartDurationBtn)
+
+
         adapter = CallerDashboardOverviewAdapter()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+
+        // Handle click events to switch charts
+        chartCallsBtn.setOnClickListener {
+            pieChartCalls.visibility = View.VISIBLE
+            pieChartDuration.visibility = View.GONE
+        }
+
+        chartDurationBtn.setOnClickListener {
+            pieChartCalls.visibility = View.GONE
+            pieChartDuration.visibility = View.VISIBLE
+        }
 
         pieChartCalls.apply {
             isDrawHoleEnabled = false  // ❌ No white hole
