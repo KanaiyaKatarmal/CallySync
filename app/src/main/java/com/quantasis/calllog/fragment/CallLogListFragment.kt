@@ -11,12 +11,17 @@ import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import android.os.Environment
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.FileProvider
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +36,7 @@ import com.quantasis.calllog.viewModel.CallLogViewModel
 import kotlinx.coroutines.launch
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import com.quantasis.calllog.database.CallLogEntity
 import com.quantasis.calllog.interfacecallback.OnCallLogItemClickListener
 import com.quantasis.calllog.repository.CallLogPageType
@@ -189,10 +195,61 @@ class CallLogListFragment : Fragment(R.layout.fragment_call_log) {
     }
 
 
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_analysis_toolbar, menu)
 
-    private fun formatDate(date: Date): String {
-        val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        return formatter.format(date)
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
+
+                searchView.queryHint = "Search by name or number"
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        // Handle search submit
+                        viewModel.setSearch(query.orEmpty())
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        // Handle live search
+                        viewModel.setSearch(newText.orEmpty())
+                        return true
+                    }
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.action_filter -> {
+                        // Show filter dialog or sheet
+                        DateRangeDialogFragment { start, end ->
+                            if (start == null || end == null) {
+                                Toast.makeText(context, "Filter Cleared", Toast.LENGTH_SHORT).show()
+                                //dateRangeText.text = "No Date ange Selected"
+                            } else {
+                                //Toast.makeText(context, "Selected: $start to $end", Toast.LENGTH_SHORT).show()
+                                //dateRangeText.text = "${dateFormat.format(start)} - ${dateFormat.format(end)}"
+                            }
+                            startDate=start;
+                            endDate=end
+                            viewModel.setDateRange(start, end)
+                        }.show(parentFragmentManager, "DateRangeDialog")
+                        return true
+                    }
+                    R.id.action_save_pdf -> {
+                        onSavePdfClicked()
+                        return true
+                    }
+                    R.id.action_save_csv -> {
+                        onSaveCsvClicked()
+                        return true
+                    }
+                }
+                return false
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun onSavePdfClicked() {

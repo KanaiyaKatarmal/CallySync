@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Search -->
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <!-- Filter icon -->
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Filter"
+        app:showAsAction="ifRoom" />
+
+    <!-- Overflow 3-dot menu -->
+    <item
+        android:id="@+id/action_save_pdf"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Save PDF"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save_csv"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Save CSV"
+        app:showAsAction="never" />
+
+</menu>

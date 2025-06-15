@@ -40,8 +40,15 @@ object CallConvertUtil {
         val minutes = (durationSeconds % 3600) / 60
         val seconds = durationSeconds % 60
 
-        return "${hours}h ${minutes}m ${seconds}s"
+        val parts = mutableListOf<String>()
+
+        if (hours > 0) parts.add("${hours}h")
+        if (minutes > 0) parts.add("${minutes}m")
+        if (seconds > 0 || parts.isEmpty()) parts.add("${seconds}s")  // always show seconds if everything else is 0
+
+        return parts.joinToString(" ")
     }
+
     private val categoryColorMap = mapOf(
         1 to Color.parseColor("#4CAF50"),   // Green
         2 to Color.parseColor("#2196F3"),   // Blue
